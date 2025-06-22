@@ -1,0 +1,133 @@
+groupe,modèle,mode,temps,formes
+-er,aimer,indicatif,présent,j'aime
+-er,aimer,indicatif,présent,tu aimes
+-er,aimer,indicatif,présent,il aime
+-er,aimer,indicatif,présent,nous aimons
+-er,aimer,indicatif,présent,vous aimez
+-er,aimer,indicatif,présent,ils aiment
+-er,commencer,indicatif,présent,je commence
+-er,commencer,indicatif,présent,tu commences
+-er,commencer,indicatif,présent,il commence
+-er,commencer,indicatif,présent,nous commençons
+-er,commencer,indicatif,présent,vous commencez
+-er,commencer,indicatif,présent,ils commencent
+-er,manger,indicatif,présent,je mange
+-er,manger,indicatif,présent,tu manges
+-er,manger,indicatif,présent,il mange
+-er,manger,indicatif,présent,nous mangeons
+-er,manger,indicatif,présent,vous mangez
+-er,manger,indicatif,présent,ils mangent
+-ir,finir,indicatif,présent,je finis
+-ir,finir,indicatif,présent,tu finis
+-ir,finir,indicatif,présent,il finit
+-ir,finir,indicatif,présent,nous finissons
+-ir,finir,indicatif,présent,vous finissez
+-ir,finir,indicatif,présent,ils finissent
+-ir,partir,indicatif,présent,je pars
+-ir,partir,indicatif,présent,tu pars
+-ir,partir,indicatif,présent,il part
+-ir,partir,indicatif,présent,nous partons
+-ir,partir,indicatif,présent,vous partez
+-ir,partir,indicatif,présent,ils partent
+-oir,devoir,indicatif,présent,je dois
+-oir,devoir,indicatif,présent,tu dois
+-oir,devoir,indicatif,présent,il doit
+-oir,devoir,indicatif,présent,nous devons
+-oir,devoir,indicatif,présent,vous devez
+-oir,devoir,indicatif,présent,ils doivent
+-oir,pouvoir,indicatif,présent,je peux
+-oir,pouvoir,indicatif,présent,tu peux
+-oir,pouvoir,indicatif,présent,il peut
+-oir,pouvoir,indicatif,présent,nous pouvons
+-oir,pouvoir,indicatif,présent,vous pouvez
+-oir,pouvoir,indicatif,présent,ils peuvent
+-ire,lire,indicatif,présent,je lis
+-ire,lire,indicatif,présent,tu lis
+-ire,lire,indicatif,présent,il lit
+-ire,lire,indicatif,présent,nous lisons
+-ire,lire,indicatif,présent,vous lisez
+-ire,lire,indicatif,présent,ils lisent
+-ire,écrire,indicatif,présent,j'écris
+-ire,écrire,indicatif,présent,tu écris
+-ire,écrire,indicatif,présent,il écrit
+-ire,écrire,indicatif,présent,nous écrivons
+-ire,écrire,indicatif,présent,vous écrivez
+-ire,écrire,indicatif,présent,ils écrivent
+Autres,faire,indicatif,présent,je fais
+Autres,faire,indicatif,présent,tu fais
+Autres,faire,indicatif,présent,il fait
+Autres,faire,indicatif,présent,nous faisons
+Autres,faire,indicatif,présent,vous faites
+Autres,faire,indicatif,présent,ils font
+Autres,être,indicatif,présent,je suis
+Autres,être,indicatif,présent,tu es
+Autres,être,indicatif,présent,il est
+Autres,être,indicatif,présent,nous sommes
+Autres,être,indicatif,présent,vous êtes
+Autres,être,indicatif,présent,ils sont
+Autres,avoir,indicatif,présent,j'ai
+Autres,avoir,indicatif,présent,tu as
+Autres,avoir,indicatif,présent,il a
+Autres,avoir,indicatif,présent,nous avons
+Autres,avoir,indicatif,présent,vous avez
+Autres,avoir,indicatif,présent,ils ont
+-er,appeler,indicatif,présent,j'appelle
+-er,appeler,indicatif,présent,tu appelles
+-er,appeler,indicatif,présent,il appelle
+-er,appeler,indicatif,présent,nous appelons
+-er,appeler,indicatif,présent,vous appelez
+-er,appeler,indicatif,présent,ils appellent
+-er,acheter,indicatif,présent,j'achète
+-er,acheter,indicatif,présent,tu achètes
+-er,acheter,indicatif,présent,il achète
+-er,acheter,indicatif,présent,nous achetons
+-er,acheter,indicatif,présent,vous achetez
+-er,acheter,indicatif,présent,ils achètent
+-er,répéter,indicatif,présent,je répète
+-er,répéter,indicatif,présent,tu répètes
+-er,répéter,indicatif,présent,il répète
+-er,répéter,indicatif,présent,nous répétons
+-er,répéter,indicatif,présent,vous répétez
+-er,répéter,indicatif,présent,ils répètent
+Autres,boire,indicatif,présent,je bois
+Autres,boire,indicatif,présent,tu bois
+Autres,boire,indicatif,présent,il boit
+Autres,boire,indicatif,présent,nous buvons
+Autres,boire,indicatif,présent,vous buvez
+Autres,boire,indicatif,présent,ils boivent
+-er,aller,indicatif,présent,je vais
+-er,aller,indicatif,présent,tu vas
+-er,aller,indicatif,présent,il va
+-er,aller,indicatif,présent,nous allons
+-er,aller,indicatif,présent,vous allez
+-er,aller,indicatif,présent,ils vont
+-oir,vouloir,indicatif,présent,je veux
+-oir,vouloir,indicatif,présent,tu veux
+-oir,vouloir,indicatif,présent,il peut
+-oir,vouloir,indicatif,présent,nous pouvons
+-oir,vouloir,indicatif,présent,vous pouvez
+-oir,vouloir,indicatif,présent,ils peuvent
+-er,aller,indicatif,passé composé,je suis allé
+-er,aller,indicatif,passé composé,tu es allé
+-er,aller,indicatif,passé composé,il est allé
+-er,aller,indicatif,passé composé,nous sommes allés
+-er,aller,indicatif,passé composé,vous êtes allés
+-er,aller,indicatif,passé composé,ils sont allés
+-er,manger,indicatif,passé composé,j'ai mangé
+-er,manger,indicatif,passé composé,tu as mangé
+-er,manger,indicatif,passé composé,il a mangé
+-er,manger,indicatif,passé composé,nous avons mangé
+-er,manger,indicatif,passé composé,vous avez mangé
+-er,manger,indicatif,passé composé,ils ont mangé
+-ir,finir,indicatif,passé composé,j'ai fini
+-ir,finir,indicatif,passé composé,tu as fini
+-ir,finir,indicatif,passé composé,il a fini
+-ir,finir,indicatif,passé composé,nous avons fini
+-ir,finir,indicatif,passé composé,vous avez fini
+-ir,finir,indicatif,passé composé,ils ont fini
+-oir,pouvoir,indicatif,passé composé,j'ai pu
+-oir,pouvoir,indicatif,passé composé,tu as pu
+-oir,pouvoir,indicatif,passé composé,il a pu
+-oir,pouvoir,indicatif,passé composé,nous avons pu
+-oir,pouvoir,indicatif,passé composé,vous avez pu
+-oir,pouvoir,indicatif,passé composé,ils ont pu
