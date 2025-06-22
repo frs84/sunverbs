@@ -42,13 +42,13 @@ if "selected_verbs" not in st.session_state:
     }
 if "selected_temps" not in st.session_state:
     st.session_state.selected_temps = set(temps)
-
-# Bouton Réinitialiser
+    
+# Bouton Réinitialiser : remet tout sélectionné (tous verbes, tous temps)
 if st.button("↺ Réinitialiser les sélections"):
     for g in groupes:
-        st.session_state.selected_verbs[g] = set()
-    st.session_state.selected_temps = set()
-
+        st.session_state.selected_verbs[g] = set(df[df["groupe"] == g]["modèle"].dropna().unique())
+    st.session_state.selected_temps = set(temps)
+    
 # Section Temps
 st.markdown("### Temps")
 st.checkbox("Tous les temps", value=False, key="all_temps_dummy")  # décoché à l'affichage
