@@ -5,23 +5,15 @@ import plotly.express as px
 # Must be the very first Streamlit command
 st.set_page_config(page_title="Sunverbs")
 
-# CSS pour coches noires sans fond + réduire espacement vertical
+# CSS pour coches noires sans fond
 st.markdown("""
     <style>
-    /* Couleur coche noire */
     input[type="checkbox"] {
         accent-color: black !important;
     }
-    /* Pas de fond rouge sur label */
     div.stCheckbox > div > label > div {
         color: inherit !important;
         background: none !important;
-    }
-    /* Réduire l'espacement vertical des checkbox */
-    .stCheckbox > div {
-        margin-bottom: 2px !important;
-        padding-bottom: 0 !important;
-        padding-top: 0 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -29,18 +21,21 @@ st.markdown("""
 # Chargement des données
 df = pd.read_csv("sunverbs.csv")
 
-# Vérification colonnes requises
+# Vérification des colonnes nécessaires
 required_cols = ['groupe', 'modèle', 'temps', 'formes']
 for col in required_cols:
     if col not in df.columns:
         st.error(f"Colonne manquante : {col}")
         st.stop()
 
-# Initialisation des groupes et temps
+# Titre
+st.title("🌞 Sunverbs")
+
+# Listes uniques
 groupes = sorted(df['groupe'].dropna().unique())
 temps = sorted(df['temps'].dropna().unique())
 
-# Initialisation sélection interne : tout sélectionné par défaut
+# Initialisation session_state (tout sélectionné en mémoire)
 if "selected_verbs" not in st.session_state:
     st.session_state.selected_verbs = {
         g: set(df[df["groupe"] == g]["modèle"].dropna().unique()) for g in groupes
@@ -48,31 +43,53 @@ if "selected_verbs" not in st.session_state:
 if "selected_temps" not in st.session_state:
     st.session_state.selected_temps = set(temps)
 
-# Gérer la réinitialisation via flag et rerun (avant tout affichage)
-if st.session_state.get("reset_requested", False):
-    # On vide la sélection (décocher toutes cases)
-    for g in groupes:
-        st.session_state.selected_verbs[g] = set()
-    st.session_state.selected_temps = set()
-    st.session_state["reset_requested"] = False
-    st.experimental_rerun()
+# Boutons Tout cocher / Tout décocher
+col1, col2 = st.columns(2)
 
-# Titre
-st.title("🌞 Sunverbs")
+with col1:
+    if st.button("✅ Tout cocher"):
+        # Cocher tous les temps
+        st.session_state.selected_temps = set(temps)
+        # Cocher tous les verbes par groupe
+        for g in groupes:
+            st.session_state.selected_verbs[g] = set(df[df["groupe"] == g]["modèle"].dropna().unique())
+        st.rerun()
 
-# Bouton Réinitialiser (ne fait QUE poser le flag)
-if st.button("↺ Réinitialiser les sélections"):
-    st.session_state["reset_requested"] = True
+with col2:
+    if st.button("❌ Tout décocher"):
+        # Décocher tous les temps
+        st.session_state.selected_temps.clear()
+        # Décocher tous les verbes par groupe
+        for g in groupes:
+            st.session_state.selected_verbs[g] = set()
+        st.rerun()
 
-# Section Temps
 st.markdown("### Temps")
+
+# Checkbox "Tous les temps"
+all_temps_selected = len(st.session_state.selected_temps) == len(temps)
+new_all_temps = st.checkbox("Tous les temps", value=all_temps_selected, key="all_temps")
+
+if new_all_temps != all_temps_selected:
+    if new_all_temps:
+        # Cocher tous les temps
+        st.session_state.selected_temps = set(temps)
+    else:
+        # Décocher tous les temps
+        st.session_state.selected_temps.clear()
+    st.rerun()
+
+# Checkboxes temps individuelles
 for t in temps:
     checked = t in st.session_state.selected_temps
-    checked_new = st.checkbox(t, value=checked, key=f"temps_{t}")
-    if checked_new and not checked:
-        st.session_state.selected_temps.add(t)
-    elif not checked_new and checked:
-        st.session_state.selected_temps.discard(t)
+    new_val = st.checkbox(t, value=checked, key=f"temps_{t}")
+    if new_val != checked:
+        if new_val:
+            st.session_state.selected_temps.add(t)
+        else:
+            st.session_state.selected_temps.discard(t)
+        st.rerun()
+
 
 # Section Groupes et verbes
 st.markdown("### Groupes et verbes")
@@ -82,40 +99,40 @@ for i, groupe in enumerate(groupes):
     with cols[i]:
         verbes = sorted(df[df["groupe"] == groupe]["modèle"].dropna().unique())
 
+        # Checkbox groupe : cochée si tous les verbes sélectionnés
         all_selected = st.session_state.selected_verbs[groupe] == set(verbes)
         new_all_selected = st.checkbox(f"**{groupe}**", value=all_selected, key=f"group_{groupe}")
 
         if new_all_selected != all_selected:
+            # Mise à jour de la sélection des verbes du groupe en fonction de la case groupe
             if new_all_selected:
                 st.session_state.selected_verbs[groupe] = set(verbes)
             else:
                 st.session_state.selected_verbs[groupe] = set()
 
+        # Checkbox pour chaque verbe
         for verbe in verbes:
             is_checked = verbe in st.session_state.selected_verbs[groupe]
             new_checked = st.checkbox(verbe, value=is_checked, key=f"{groupe}_{verbe}")
-            if new_checked and not is_checked:
-                st.session_state.selected_verbs[groupe].add(verbe)
-            elif not new_checked and is_checked:
-                st.session_state.selected_verbs[groupe].discard(verbe)
+            if new_checked != is_checked:
+                if new_checked:
+                    st.session_state.selected_verbs[groupe].add(verbe)
+                else:
+                    st.session_state.selected_verbs[groupe].discard(verbe)
 
-# Filtrage des données selon sélection
-mask = pd.Series(True, index=df.index)  # tout True = tout afficher
 
-# Si au moins un verbe sélectionné, on filtre
-if any(st.session_state.selected_verbs[g] for g in groupes):
-    mask = pd.Series(False, index=df.index)
-    for groupe in groupes:
-        selected = st.session_state.selected_verbs[groupe]
-        if selected:
-            mask |= ((df['groupe'] == groupe) & df['modèle'].isin(selected))
+# Filtrer les données selon la sélection interne
+mask = pd.Series(False, index=df.index)
 
-# Si au moins un temps sélectionné, on filtre
+for groupe in groupes:
+    selected = st.session_state.selected_verbs[groupe]
+    if selected:
+        mask |= ((df['groupe'] == groupe) & df['modèle'].isin(selected))
+
 if st.session_state.selected_temps:
     mask &= df['temps'].isin(st.session_state.selected_temps)
 
-# Si masque tout True => on garde tout le df, sinon on filtre
-filtered_df = df if mask.all() else df[mask]
+filtered_df = df if not mask.any() else df[mask]
 
 # Graphique Sunburst
 fig = px.sunburst(
