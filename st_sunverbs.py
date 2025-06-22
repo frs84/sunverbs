@@ -55,7 +55,12 @@ if st.button("↺ Réinitialiser les sélections"):
     for g in groupes:
         st.session_state.selected_verbs[g] = set(df[df["groupe"] == g]["modèle"].dropna().unique())
     st.session_state.selected_temps = set(temps)
+    st.session_state["needs_rerun"] = True
+
+if st.session_state.get("needs_rerun", False):
+    st.session_state["needs_rerun"] = False
     st.experimental_rerun()
+
 
 # Section Temps
 st.markdown("### Temps")
