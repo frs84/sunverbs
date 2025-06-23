@@ -137,7 +137,7 @@ filtered_df = df if not mask.any() else df[mask]
 # Graphique Sunburst
 fig = px.sunburst(
     filtered_df,
-    path=['groupe', 'modèle', 'temps', 'formes'],
+    path=['groupe', 'modèle', 'mode','temps', 'formes'],
     maxdepth=-1,
     width=900,
     height=800
