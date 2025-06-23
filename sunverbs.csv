@@ -155,3 +155,125 @@ Autres,boire,indicatif,présent,ils boivent
 -ir,finir,indicatif,imparfait,nous finissions
 -ir,finir,indicatif,imparfait,vous finissiez
 -ir,finir,indicatif,imparfait,ils finissaient
+Autres,être,indicatif,passé composé,j'ai été
+Autres,être,indicatif,passé composé,tu as été
+Autres,être,indicatif,passé composé,il a été
+Autres,être,indicatif,passé composé,nous avons été
+Autres,être,indicatif,passé composé,vous avez été
+Autres,être,indicatif,passé composé,ils ont été
+Autres,être,indicatif,imparfait,j'étais
+Autres,être,indicatif,imparfait,tu étais
+Autres,être,indicatif,imparfait,il était
+Autres,être,indicatif,imparfait,nous étions
+Autres,être,indicatif,imparfait,vous étiez
+Autres,être,indicatif,imparfait,ils étaient
+Autres,être,indicatif,futur simple,je serai
+Autres,être,indicatif,futur simple,tu seras
+Autres,être,indicatif,futur simple,il sera
+Autres,être,indicatif,futur simple,nous serons
+Autres,être,indicatif,futur simple,vous serez
+Autres,être,indicatif,futur simple,ils seront
+Autres,être,conditionnel,présent,je serais
+Autres,être,conditionnel,présent,tu serais
+Autres,être,conditionnel,présent,il serait
+Autres,être,conditionnel,présent,nous serions
+Autres,être,conditionnel,présent,vous seriez
+Autres,être,conditionnel,présent,ils seraient
+Autres,être,conditionnel,passé,j'aurais été
+Autres,être,conditionnel,passé,tu aurais été
+Autres,être,conditionnel,passé,il aurait été
+Autres,être,conditionnel,passé,nous aurions été
+Autres,être,conditionnel,passé,vous auriez été
+Autres,être,conditionnel,passé,ils auraient été
+Autres,être,subjonctif,présent,que je sois
+Autres,être,subjonctif,présent,que tu sois
+Autres,être,subjonctif,présent,qu'il soit
+Autres,être,subjonctif,présent,que nous soyons
+Autres,être,subjonctif,présent,que vous soyez
+Autres,être,subjonctif,présent,qu'ils soient
+Autres,être,subjonctif,imparfait,que je fusse
+Autres,être,subjonctif,imparfait,que tu fusses
+Autres,être,subjonctif,imparfait,qu'il fût
+Autres,être,subjonctif,imparfait,que nous fussions
+Autres,être,subjonctif,imparfait,que vous fussiez
+Autres,être,subjonctif,imparfait,qu'ils fussent
+Autres,être,subjonctif,passé,que j'aie été
+Autres,être,subjonctif,passé,que tu aies été
+Autres,être,subjonctif,passé,qu'il ait été
+Autres,être,subjonctif,passé,que nous ayons été
+Autres,être,subjonctif,passé,que vous ayez été
+Autres,être,subjonctif,passé,qu'ils aient été
+Autres,être,subjonctif,plus-que-parfait,que j'eusse été
+Autres,être,subjonctif,plus-que-parfait,que tu eusses été
+Autres,être,subjonctif,plus-que-parfait,qu'il eût été
+Autres,être,subjonctif,plus-que-parfait,que nous eussions été
+Autres,être,subjonctif,plus-que-parfait,que vous eussiez été
+Autres,être,subjonctif,plus-que-parfait,qu'ils eussent été
+Autres,être,impératif,présent,sois
+Autres,être,impératif,présent,soyons
+Autres,être,impératif,présent,soyez
+Autres,être,infinitif,présent,être
+Autres,être,infinitif,passé,avoir été
+Autres,être,participe,présent,étant
+Autres,être,participe,passé,été
+Autres,avoir,indicatif,passé composé,j'ai eu
+Autres,avoir,indicatif,passé composé,tu as eu
+Autres,avoir,indicatif,passé composé,il a eu
+Autres,avoir,indicatif,passé composé,nous avons eu
+Autres,avoir,indicatif,passé composé,vous avez eu
+Autres,avoir,indicatif,passé composé,ils ont eu
+Autres,avoir,indicatif,imparfait,j'avais
+Autres,avoir,indicatif,imparfait,tu avais
+Autres,avoir,indicatif,imparfait,il avait
+Autres,avoir,indicatif,imparfait,nous avions
+Autres,avoir,indicatif,imparfait,vous aviez
+Autres,avoir,indicatif,imparfait,ils avaient
+Autres,avoir,indicatif,futur simple,j'aurai
+Autres,avoir,indicatif,futur simple,tu auras
+Autres,avoir,indicatif,futur simple,il aura
+Autres,avoir,indicatif,futur simple,nous aurons
+Autres,avoir,indicatif,futur simple,vous aurez
+Autres,avoir,indicatif,futur simple,ils auront
+Autres,avoir,conditionnel,présent,j'aurais
+Autres,avoir,conditionnel,présent,tu aurais
+Autres,avoir,conditionnel,présent,il aurait
+Autres,avoir,conditionnel,présent,nous aurions
+Autres,avoir,conditionnel,présent,vous auriez
+Autres,avoir,conditionnel,présent,ils auraient
+Autres,avoir,conditionnel,passé,j'aurais eu
+Autres,avoir,conditionnel,passé,tu aurais eu
+Autres,avoir,conditionnel,passé,il aurait eu
+Autres,avoir,conditionnel,passé,nous aurions eu
+Autres,avoir,conditionnel,passé,vous auriez eu
+Autres,avoir,conditionnel,passé,ils auraient eu
+Autres,avoir,subjonctif,présent,que j'aie
+Autres,avoir,subjonctif,présent,que tu aies
+Autres,avoir,subjonctif,présent,qu'il ait
+Autres,avoir,subjonctif,présent,que nous ayons
+Autres,avoir,subjonctif,présent,que vous ayez
+Autres,avoir,subjonctif,présent,qu'ils aient
+Autres,avoir,subjonctif,imparfait,que j'eusse
+Autres,avoir,subjonctif,imparfait,que tu eusses
+Autres,avoir,subjonctif,imparfait,qu'il eût
+Autres,avoir,subjonctif,imparfait,que nous eussions
+Autres,avoir,subjonctif,imparfait,que vous eussiez
+Autres,avoir,subjonctif,imparfait,qu'ils eussent
+Autres,avoir,subjonctif,passé,que j'aie eu
+Autres,avoir,subjonctif,passé,que tu aies eu
+Autres,avoir,subjonctif,passé,qu'il ait eu
+Autres,avoir,subjonctif,passé,que nous ayons eu
+Autres,avoir,subjonctif,passé,que vous ayez eu
+Autres,avoir,subjonctif,passé,qu'ils aient eu
+Autres,avoir,subjonctif,plus-que-parfait,que j'eusse eu
+Autres,avoir,subjonctif,plus-que-parfait,que tu eusses eu
+Autres,avoir,subjonctif,plus-que-parfait,qu'il eût eu
+Autres,avoir,subjonctif,plus-que-parfait,que nous eussions eu
+Autres,avoir,subjonctif,plus-que-parfait,que vous eussiez eu
+Autres,avoir,subjonctif,plus-que-parfait,qu'ils eussent eu
+Autres,avoir,impératif,présent,aie
+Autres,avoir,impératif,présent,ayons
+Autres,avoir,impératif,présent,ayez
+Autres,avoir,infinitif,présent,avoir
+Autres,avoir,infinitif,passé,avoir eu
+Autres,avoir,participe,présent,ayant
+Autres,avoir,participe,passé,eu
