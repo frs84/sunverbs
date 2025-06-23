@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 import locale
 #locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')  # à placer en haut du fichier une seule fois
-locale.setlocale(locale.LC_ALL, 'French_France.1252')
+#locale.setlocale(locale.LC_ALL, 'French_France.1252')
 
 # Configuration de la page
 st.set_page_config(page_title="Sunverbs")
