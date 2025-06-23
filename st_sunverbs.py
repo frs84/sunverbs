@@ -22,7 +22,7 @@ st.markdown("""
 df = pd.read_csv("sunverbs.csv")
 
 # Vérification des colonnes nécessaires
-required_cols = ['groupe', 'modèle', 'temps', 'formes']
+required_cols = ['groupe', 'modèle', 'mode','temps', 'formes']
 for col in required_cols:
     if col not in df.columns:
         st.error(f"Colonne manquante : {col}")
