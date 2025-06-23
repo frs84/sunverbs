@@ -68,7 +68,7 @@ st.markdown("### Temps")
 
 # Checkbox "Tous les temps"
 all_temps_selected = len(st.session_state.selected_temps) == len(temps)
-new_all_temps = st.checkbox("Tous les temps", value=all_temps_selected, key="all_temps")
+new_all_temps = st.checkbox("**Tous les temps**", value=all_temps_selected, key="all_temps")
 
 if new_all_temps != all_temps_selected:
     if new_all_temps:
