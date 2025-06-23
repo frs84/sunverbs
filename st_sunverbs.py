@@ -142,4 +142,7 @@ fig = px.sunburst(
     width=900,
     height=800
 )
+
+# Supprimer les infobulles (tooltips)
+fig.update_traces(hoverinfo='skip', hovertemplate=None)
 st.plotly_chart(fig, use_container_width=True)
