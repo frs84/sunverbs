@@ -62,7 +62,7 @@ def afficher_exercice(filtered_df):
         len(st.session_state.exercice_resultat) == 2
     ):
         niveau, message = st.session_state.exercice_resultat
-        couleur = "green" if niveau == "success" else "black"
+        couleur = "green" if niveau == "success" else "red"
         st.markdown(f"<div style='color: {couleur}'>{message}</div>",
            unsafe_allow_html=True)
 
