@@ -2,8 +2,19 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import locale
-#locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')  # à placer en haut du fichier une seule fois
-#locale.setlocale(locale.LC_ALL, 'French_France.1252')
+try:
+    # Linux (Streamlit Cloud)
+    locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
+except locale.Error:
+    try:
+        # Windows
+        locale.setlocale(locale.LC_ALL, 'French_France.1252')
+    except locale.Error:
+        # Fallback : pas de tri accentué
+        locale.setlocale(locale.LC_ALL, '')
+import random
+from exercise import afficher_exercice
+
 
 # Configuration de la page
 st.set_page_config(page_title="Sunverbs")
@@ -22,7 +33,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Chargement des données
-df = pd.read_csv("sunverbs.csv")
+df = pd.read_csv("data/sunverbs.csv")
 
 # Vérification des colonnes nécessaires
 required_cols = ['groupe', 'modèle', 'mode', 'temps', 'formes']
@@ -30,6 +41,21 @@ for col in required_cols:
     if col not in df.columns:
         st.error(f"Colonne manquante : {col}")
         st.stop()
+
+# Chargement des personnes
+personnes_possibles = ["je", "tu", "il", "elle", "nous", "vous", "ils", "elles"]
+
+def extraire_personne(forme):
+    if not isinstance(forme, str):
+        return None
+    forme = forme.strip().lower()
+    if forme.startswith("j'"):
+        return "je"
+    mot = forme.split()[0]
+    return mot if mot in personnes_possibles else None
+
+df["personne"] = df["formes"].apply(extraire_personne)
+personnes_presentes = sorted(df["personne"].dropna().unique())
 
 # Titre
 st.title("🌞 Sunverbs")
@@ -83,9 +109,8 @@ with col1:
     if st.button("✅ Tout cocher"):
         for g in groupes:
             st.session_state.selected_verbs[g] = set(df[df["groupe"] == g]["modèle"].dropna().unique())
-        st.session_state.selected_modes_temps = set(
-            (m, t) for m in modes for t in mode_to_temps[m]
-        )
+            st.session_state.selected_modes_temps = set((m, t) for m in modes for t in mode_to_temps[m])
+            st.session_state.selected_personnes = set(personnes_presentes)
         st.rerun()
 
 with col2:
@@ -93,63 +118,109 @@ with col2:
         for g in groupes:
             st.session_state.selected_verbs[g] = set()
         st.session_state.selected_modes_temps.clear()
+        st.session_state.selected_personnes.clear()
         st.rerun()
 
-# --- Temps et modes ---
-st.markdown("### Temps et modes")
-cols = st.columns(3)
+# Section temps et modes dans un expander
+with st.expander("Temps et modes", expanded=False):
+    cols = st.columns(3)
+    for i, mode in enumerate(modes):
+        with cols[i]:
+            temps_liste = mode_to_temps[mode]
+            tous_coches = all((mode, t) in st.session_state.selected_modes_temps for t in temps_liste)
+            nouvelle_val = st.checkbox(f"{mode}", value=tous_coches, key=f"mode_{mode}")
 
-for i, mode in enumerate(modes):
-    with cols[i]:
-        temps_liste = mode_to_temps[mode]
-        tous_coches = all((mode, t) in st.session_state.selected_modes_temps for t in temps_liste)
-        nouvelle_val = st.checkbox(f"**{mode}**", value=tous_coches, key=f"mode_{mode}")
-
-        if nouvelle_val != tous_coches:
-            if nouvelle_val:
-                for t in temps_liste:
-                    st.session_state.selected_modes_temps.add((mode, t))
-            else:
-                for t in temps_liste:
-                    st.session_state.selected_modes_temps.discard((mode, t))
-            st.rerun()
-
-        for t in temps_liste:
-            checked = (mode, t) in st.session_state.selected_modes_temps
-            new_checked = st.checkbox(t, value=checked, key=f"{mode}_{t}")
-            if new_checked != checked:
-                if new_checked:
-                    st.session_state.selected_modes_temps.add((mode, t))
+            if nouvelle_val != tous_coches:
+                if nouvelle_val:
+                    for t in temps_liste:
+                        st.session_state.selected_modes_temps.add((mode, t))
                 else:
-                    st.session_state.selected_modes_temps.discard((mode, t))
+                    for t in temps_liste:
+                        st.session_state.selected_modes_temps.discard((mode, t))
                 st.rerun()
 
-# --- Groupes et verbes ---
-st.markdown("### Groupes et verbes")
-cols = st.columns(len(groupes))
+            for t in temps_liste:
+                checked = (mode, t) in st.session_state.selected_modes_temps
+                new_checked = st.checkbox(t, value=checked, key=f"{mode}_{t}")
+                if new_checked != checked:
+                    if new_checked:
+                        st.session_state.selected_modes_temps.add((mode, t))
+                    else:
+                        st.session_state.selected_modes_temps.discard((mode, t))
+                    st.rerun()
 
-for i, groupe in enumerate(groupes):
-    with cols[i]:
-        verbes = df[df["groupe"] == groupe]["modèle"].dropna().unique()
-        verbes = sorted(verbes, key=locale.strxfrm)
-        all_selected = st.session_state.selected_verbs[groupe] == set(verbes)
-        new_all_selected = st.checkbox(f"**{groupe}**", value=all_selected, key=f"group_{groupe}")
 
-        if new_all_selected != all_selected:
-            st.session_state.selected_verbs[groupe] = set(verbes) if new_all_selected else set()
-            st.rerun()
+# Initialisation
+if "selected_personnes" not in st.session_state:
+    st.session_state.selected_personnes = set(personnes_presentes)
 
-        for verbe in verbes:
-            is_checked = verbe in st.session_state.selected_verbs[groupe]
-            new_checked = st.checkbox(verbe, value=is_checked, key=f"{groupe}_{verbe}")
-            if new_checked != is_checked:
-                if new_checked:
-                    st.session_state.selected_verbs[groupe].add(verbe)
-                else:
-                    st.session_state.selected_verbs[groupe].discard(verbe)
+with st.expander("Personnes", expanded=False):
+    col1, col2 = st.columns(2)
+
+    groupe1 = ["je", "tu", "il", "elle"]
+    groupe2 = ["nous", "vous", "ils", "elles"]
+
+    all_selected = len(st.session_state.selected_personnes) == len(personnes_presentes)
+    new_all = st.checkbox("Toutes les personnes", value=all_selected, key="all_personnes")
+
+    if new_all != all_selected:
+        if new_all:
+            st.session_state.selected_personnes = set(personnes_presentes)
+        else:
+            st.session_state.selected_personnes.clear()
+        st.rerun()
+
+    with col1:
+        for p in groupe1:
+            if p in personnes_presentes:
+                checked = p in st.session_state.selected_personnes
+                new_val = st.checkbox(p, value=checked, key=f"personne_{p}")
+                if new_val != checked:
+                    if new_val:
+                        st.session_state.selected_personnes.add(p)
+                    else:
+                        st.session_state.selected_personnes.discard(p)
+                    st.rerun()
+
+    with col2:
+        for p in groupe2:
+            if p in personnes_presentes:
+                checked = p in st.session_state.selected_personnes
+                new_val = st.checkbox(p, value=checked, key=f"personne_{p}")
+                if new_val != checked:
+                    if new_val:
+                        st.session_state.selected_personnes.add(p)
+                    else:
+                        st.session_state.selected_personnes.discard(p)
+                    st.rerun()
+
+
+
+# Section groupes et verbes dans un expander
+with st.expander("Groupes et verbes", expanded=False):
+    cols = st.columns(len(groupes))
+    for i, groupe in enumerate(groupes):
+        with cols[i]:
+            verbes = df[df["groupe"] == groupe]["modèle"].dropna().unique()
+            verbes = sorted(verbes, key=locale.strxfrm)
+            all_selected = st.session_state.selected_verbs[groupe] == set(verbes)
+            new_all_selected = st.checkbox(f"{groupe}", value=all_selected, key=f"group_{groupe}")
+
+            if new_all_selected != all_selected:
+                st.session_state.selected_verbs[groupe] = set(verbes) if new_all_selected else set()
                 st.rerun()
 
-# --- Filtrage logique robuste ---
+            for verbe in verbes:
+                is_checked = verbe in st.session_state.selected_verbs[groupe]
+                new_checked = st.checkbox(verbe, value=is_checked, key=f"{groupe}_{verbe}")
+                if new_checked != is_checked:
+                    if new_checked:
+                        st.session_state.selected_verbs[groupe].add(verbe)
+                    else:
+                        st.session_state.selected_verbs[groupe].discard(verbe)
+                    st.rerun()
+
+# --- Filtrage logique ---
 mask = pd.Series(True, index=df.index)
 
 # Filtrage verbes
@@ -171,8 +242,12 @@ if st.session_state.selected_modes_temps:
         axis=1
     )
 
-filtered_df = df[mask]
+# Filtrage par personne
 
+if st.session_state.selected_personnes:
+    mask &= df["personne"].isin(st.session_state.selected_personnes)
+
+filtered_df = df[mask]
 
 # --- Résultat ---
 if filtered_df.empty:
@@ -182,8 +257,11 @@ else:
         filtered_df,
         path=['groupe', 'modèle', 'mode', 'temps', 'formes'],
         maxdepth=-1,
-        width=900,
-        height=800
+        width=850,
+        height=750
     )
     fig.update_traces(hoverinfo='skip', hovertemplate=None)
     st.plotly_chart(fig, use_container_width=True)
+
+#--- Exercice --- 
+afficher_exercice(filtered_df)
