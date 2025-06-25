@@ -1,5 +1,9 @@
 import streamlit as st
 
+def normaliser(texte):
+    # Remplace les apostrophes typographiques par des apostrophes droites, minuscule, sans espaces
+    return texte.replace("’", "'").strip().lower()
+
 def afficher_exercice(filtered_df):
     st.markdown("---")
     st.markdown("### 📝 Exercice : Devine la bonne forme")
@@ -39,9 +43,9 @@ def afficher_exercice(filtered_df):
         valider = col1.form_submit_button("✅ Vérifier")
         nouvelle = col2.form_submit_button("🔄 Nouvelle question")
 
-        if valider:
-            bonne_reponse = forme.strip().lower()
-            utilisateur = reponse.strip().lower()
+        if valider and reponse:
+            bonne_reponse = normaliser(forme)
+            utilisateur = normaliser(reponse)
 
             if utilisateur == bonne_reponse:
                 st.session_state.exercice_resultat = ("success", "✅ Bonne réponse !")
@@ -62,7 +66,7 @@ def afficher_exercice(filtered_df):
         len(st.session_state.exercice_resultat) == 2
     ):
         niveau, message = st.session_state.exercice_resultat
-        couleur = "green" if niveau == "success" else "red"
+        couleur = "green" if niveau == "success" else "black"
         st.markdown(f"<div style='color: {couleur}'>{message}</div>",
            unsafe_allow_html=True)
 
