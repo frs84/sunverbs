@@ -1,9 +1,5 @@
 import streamlit as st
 
-def normaliser(texte):
-    # Remplace les apostrophes typographiques par des apostrophes droites, minuscule, sans espaces
-    return texte.replace("’", "'").strip().lower()
-
 def afficher_exercice(filtered_df):
     st.markdown("---")
     st.markdown("### 📝 Exercice : Devine la bonne forme")
@@ -23,6 +19,8 @@ def afficher_exercice(filtered_df):
 
     # Assurer que ligne_exercice est initialisée
     gerer_interactions(df_exo)
+    if st.session_state.ligne_exercice.name not in df_exo.index:
+        nouvelle_question(df_exo)
 
     # Affichage de la question actuelle
     ligne = st.session_state.ligne_exercice
@@ -30,7 +28,7 @@ def afficher_exercice(filtered_df):
     verbe = ligne["modèle"]
     mode = ligne["mode"]
     temps = ligne["temps"]
-    personne = ligne.get("personne", forme.split()[0])
+    personne = ligne["personne"]
 
     st.markdown(
         f"Quelle est la forme correcte du verbe {verbe}, {mode} {temps} : {personne} ?"
@@ -43,9 +41,9 @@ def afficher_exercice(filtered_df):
         valider = col1.form_submit_button("✅ Vérifier")
         nouvelle = col2.form_submit_button("🔄 Nouvelle question")
 
-        if valider and reponse:
-            bonne_reponse = normaliser(forme)
-            utilisateur = normaliser(reponse)
+        if valider:
+            bonne_reponse = forme.strip().lower()
+            utilisateur = reponse.strip().lower()
 
             if utilisateur == bonne_reponse:
                 st.session_state.exercice_resultat = ("success", "✅ Bonne réponse !")
