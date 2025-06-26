@@ -33,7 +33,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Chargement des données
-df = pd.read_csv("sunverbs.csv")
+df = pd.read_csv("data/sunverbs.csv")
 
 # Vérification des colonnes nécessaires
 required_cols = ['groupe', 'modèle', 'mode', 'temps', 'formes']
@@ -43,18 +43,6 @@ for col in required_cols:
         st.stop()
 
 # Chargement des personnes
-personnes_possibles = ["je", "tu", "il", "elle", "nous", "vous", "ils", "elles"]
-
-def extraire_personne(forme):
-    if not isinstance(forme, str):
-        return None
-    forme = forme.strip().lower()
-    if forme.startswith("j'"):
-        return "je"
-    mot = forme.split()[0]
-    return mot if mot in personnes_possibles else None
-
-df["personne"] = df["formes"].apply(extraire_personne)
 personnes_presentes = sorted(df["personne"].dropna().unique())
 
 # Titre
@@ -73,9 +61,9 @@ mode_to_temps = {m: sorted(ts) for m, ts in mode_to_temps.items()}
 
 # Ordre spécifique des temps par mode
 temps_order = {
-    'indicatif': ['présent', 'passé composé', 'imparfait', 'futur simple'],
+    'indicatif': ['présent', 'passé composé', 'imparfait', 'passé simple','futur simple'],
     'conditionnel': ['présent', 'passé'],
-    'subjonctif': ['présent', 'passé', 'imparfait', 'plus que parfait']
+    'subjonctif': ['présent', 'passé', 'imparfait', 'plus-que-parfait']
 }
 
 for mode in mode_to_temps:
