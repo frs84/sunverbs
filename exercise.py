@@ -43,7 +43,7 @@ def afficher_exercice(filtered_df):
 
         if valider:
             bonne_reponse = forme.strip().lower()
-            utilisateur = reponse.strip().lower()
+            utilisateur = reponse.strip().lower().replace("’","'")
 
             if utilisateur == bonne_reponse:
                 st.session_state.exercice_resultat = ("success", "✅ Bonne réponse !")
