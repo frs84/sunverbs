@@ -33,7 +33,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Chargement des données
-df = pd.read_csv("sunverbs.csv")
+#df = pd.read_csv("sunverbs.csv")
+@st.cache_data
+def charger_donnees():
+    return pd.read_csv("sunverbs.csv")
+
+df = charger_donnees()
 
 # Vérification des colonnes nécessaires
 required_cols = ['groupe', 'modèle', 'mode', 'temps', 'formes']
