@@ -2,7 +2,7 @@ import streamlit as st
 
 def afficher_exercice(filtered_df):
     st.markdown("---")
-    st.markdown("### 📝 Exercice : Devine la bonne forme")
+    st.markdown("### 📝 Exercice : Ecris la bonne forme")
 
     # Utiliser directement filtered_df, déjà filtré sur la personne
     df_exo = filtered_df
