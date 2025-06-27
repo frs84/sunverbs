@@ -17,7 +17,7 @@ from exercise import afficher_exercice
 
 
 # Configuration de la page
-st.set_page_config(page_title="Sunverbs")
+st.set_page_config(page_title="Sunverbes")
 
 # CSS : coches noires sans fond
 st.markdown("""
@@ -51,7 +51,7 @@ for col in required_cols:
 personnes_presentes = sorted(df["personne"].dropna().unique())
 
 # Titre
-st.title("🌞 Sunverbs")
+st.title("🌞 Sunverbes")
 
 # Valeurs uniques
 groupes = sorted(df['groupe'].dropna().unique())
