@@ -1,84 +1,87 @@
 import streamlit as st
+import pandas as pd
 
-def afficher_exercice(filtered_df):
-    st.markdown("---")
-    st.markdown("### 📝 Exercice : Ecris la bonne forme")
+class Ligne:
+    def __init__(self, ligne):
+        self.forme = ligne["formes"]
+        self.verbe = ligne["modèle"]
+        self.mode = ligne["mode"]
+        self.temps = ligne["temps"]
+        self.personne = ligne["personne"]
 
-    # Utiliser directement filtered_df, déjà filtré sur la personne
-    df_exo = filtered_df
+    def afficher_question(self):
+        st.markdown(
+            f"Quelle est la forme correcte du verbe **{self.verbe}**, "
+            f"{self.mode} {self.temps} : {self.personne} ?"
+        )
 
-    # si la sélection de données a changé, générer une nouvelle question
-    current_options = list(df_exo.index)
-    if st.session_state.get("last_exo_options") != current_options:
-        st.session_state.last_exo_options = current_options
-        nouvelle_question(df_exo)
+    def check_reponse(self, reponse_utilisateur):
+        def normaliser(texte):
+            return texte.strip().lower().replace("’", "'")
+        return normaliser(reponse_utilisateur) == normaliser(self.forme)
 
-    if df_exo.empty:
-        st.info("Aucune forme disponible pour l'exercice avec la sélection actuelle.")
-        return
+class ExoQuestion:
+    def __init__(self, df, n=10):
+        self.df_exo = df.drop_duplicates()
+        self.lignes = [Ligne(ligne) for ligne in self.df_exo.sample(n).to_dict(orient="records")]
 
-    # Assurer que ligne_exercice est initialisée
-    gerer_interactions(df_exo)
-    if st.session_state.ligne_exercice.name not in df_exo.index:
-        nouvelle_question(df_exo)
-
-    # Affichage de la question actuelle
-    ligne = st.session_state.ligne_exercice
-    forme = ligne["formes"]
-    verbe = ligne["modèle"]
-    mode = ligne["mode"]
-    temps = ligne["temps"]
-    personne = ligne["personne"]
-
-    st.markdown(
-        f"Quelle est la forme correcte du verbe {verbe}, {mode} {temps} : {personne} ?"
-    )
-
-    # Formulaire réponse
-    with st.form("form_exo"):
-        reponse = st.text_input("Ta réponse :", key="reponse_exo")
-        col1, col2 = st.columns([1, 1])
-        valider = col1.form_submit_button("✅ Vérifier")
-        nouvelle = col2.form_submit_button("🔄 Nouvelle question")
-
-        if valider:
-            bonne_reponse = forme.strip().lower()
-            utilisateur = reponse.strip().lower().replace("’","'")
-
-            if utilisateur == bonne_reponse:
-                st.session_state.exercice_resultat = ("success", "✅ Bonne réponse !")
-            else:
-                st.session_state.exercice_resultat = (
-                    "error",
-                    f"❌ Oups. La bonne forme est : {forme}."
-                )
-
-        if nouvelle:
-            nouvelle_question(df_exo)
-
-    # Affichage du message de résultat
-    if (
-        "exercice_resultat" in st.session_state and
-        st.session_state.exercice_resultat is not None and
-        isinstance(st.session_state.exercice_resultat, (tuple, list)) and
-        len(st.session_state.exercice_resultat) == 2
-    ):
-        niveau, message = st.session_state.exercice_resultat
-        couleur = "green" if niveau == "success" else "black"
-        st.markdown(f"<div style='color: {couleur}'>{message}</div>",
-           unsafe_allow_html=True)
-
-
-def gerer_interactions(df_exo):
-    if "ligne_exercice" not in st.session_state:
-        st.session_state.ligne_exercice = df_exo.sample(1).iloc[0]
-        st.session_state.exercice_resultat = None
+        # Écrase l'état précédent sans condition
+        st.session_state.exo_index = 0
+        st.session_state.score = 0
+        st.session_state.question_validee = False
         st.session_state.reponse_exo = ""
 
+    def afficher_exercice(self):
+        col1,col2= st.columns(2)
 
-def nouvelle_question(df_exo):
-    st.session_state.ligne_exercice = df_exo.sample(1).iloc[0]
-    st.session_state.exercice_resultat = None
-    if "reponse_exo" in st.session_state:
-        del st.session_state["reponse_exo"]
-    st.rerun()
+        suivant = col1.button("⏭ Question suivante",key="question suivante")
+        recommencer = col2.button("🔁 Recommencer l'exercice", key="recommencer_en_dehors_form")
+        
+        if suivant:
+            st.session_state.exo_index += 1
+            st.session_state.question_validee = False
+            st.session_state.reponse_exo = ""
+        
+        if recommencer:
+            st.session_state.recommencer_exo = True
+            st.rerun()
+
+        i = st.session_state.exo_index
+
+        if i >= len(self.lignes):
+            st.success(f"✅ Exercice terminé ! Score : {st.session_state.score} / {len(self.lignes)}")
+            if st.button("🔁 Recommencer l'exercice"):
+                del st.session_state["exo_obj"]
+                st.rerun()
+            return
+
+        ligne = self.lignes[i]
+
+        st.markdown(f"### 📝 Question {i + 1} sur {len(self.lignes)}")
+        ligne.afficher_question()
+
+        
+
+
+        with st.form(f"form_{i}"):
+            reponse = st.text_input(
+                "Ta réponse :",
+                value=st.session_state.get("reponse_exo", ""),
+                key=f"reponse"
+            )
+            valider = st.form_submit_button("✅ Vérifier")
+            
+        if valider:
+            if reponse.strip() == "":
+                st.info(f"ℹ️ La réponse correcte est : {ligne.forme}")
+            elif ligne.check_reponse(reponse):
+                st.success("✅ Bonne réponse !")
+                st.session_state.score += 1
+            else:
+                st.error(f"❌ Oups. La réponse correcte est : {ligne.forme}.")
+            st.session_state.question_validee = True
+            st.session_state.reponse_exo = reponse
+
+        
+
+        
