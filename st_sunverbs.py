@@ -50,8 +50,8 @@ for col in required_cols:
 # Chargement des personnes
 personnes_presentes = sorted(df["personne"].dropna().unique())
 
-st.image("photo.jpg", width=100)
-st.write("""Bonjour, je suis François Baeckelandt, professeur de français et programmiste entre deux cours !
+#st.image("photo.jpg", width=100)
+st.write("""Bonjour, je m'appelle François Baeckelandt, je suis professeur de français et programmiste entre deux cours !
          Pour plus d'info, rendez-vous sur mon [site](https://bfrs-fle.tb.ru/) ! Bon travail !""") 
          
 # Titre
