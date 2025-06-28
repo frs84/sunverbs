@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import locale
-from exercise import Ligne, ExoQuestion
+#from exercise import Ligne, ExoQuestion
+from exercise import afficher_exercice
 
 try:
     # Linux (Streamlit Cloud)
