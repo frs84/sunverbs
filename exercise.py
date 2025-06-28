@@ -78,7 +78,9 @@ class ExoQuestion:
                 st.success("✅ Bonne réponse !")
                 st.session_state.score += 1
             else:
-                st.error(f"❌ Oups. La réponse correcte est : {ligne.forme}.")
+                st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>"
+                            f"❌ Oups. La réponse correcte est : {ligne.forme}."
+                            f"</div>",unsafe_allow_html=True)
             st.session_state.question_validee = True
             st.session_state.reponse_exo = reponse
 
