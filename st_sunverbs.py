@@ -258,9 +258,6 @@ else:
     fig.update_traces(hoverinfo='skip', hovertemplate=None)
     st.plotly_chart(fig, use_container_width=True)
 
-#--- Exercice ---
-# Initialisation une seule fois
-if ("exo_obj" not in st.session_state) or (len(filtered_df) != len(st.session_state.exo_obj.df_exo)):
-    st.session_state.exo_obj = ExoQuestion(filtered_df, n=10)
-# Affichage
-st.session_state.exo_obj.afficher_exercice()
+
+#--- Exercice --- 
+afficher_exercice(filtered_df)
