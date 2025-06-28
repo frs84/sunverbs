@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import locale
+from exo import Ligne, ExoQuestion
+
 try:
     # Linux (Streamlit Cloud)
     locale.setlocale(locale.LC_ALL, 'fr_FR.UTF-8')
@@ -12,12 +14,9 @@ except locale.Error:
     except locale.Error:
         # Fallback : pas de tri accentué
         locale.setlocale(locale.LC_ALL, '')
-import random
-from exercise import afficher_exercice
-
 
 # Configuration de la page
-st.set_page_config(page_title="Sunverbes")
+st.set_page_config(page_title="Sunverbs")
 
 # CSS : coches noires sans fond
 st.markdown("""
@@ -32,13 +31,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Chargement des données
-#df = pd.read_csv("sunverbs.csv")
 @st.cache_data
 def charger_donnees():
-    return pd.read_csv("sunverbs.csv")
+    return pd.read_csv("data/sunverbs.csv")
 
 df = charger_donnees()
+
 
 # Vérification des colonnes nécessaires
 required_cols = ['groupe', 'modèle', 'mode', 'temps', 'formes']
@@ -50,8 +48,8 @@ for col in required_cols:
 # Chargement des personnes
 personnes_presentes = sorted(df["personne"].dropna().unique())
 
-#st.image("photo.jpg", width=100)
-st.write("""Bonjour, je m'appelle François Baeckelandt, je suis professeur de français et programmiste entre deux cours !
+#st.image("data/photo.jpg", width=100)
+st.write("""Bonjour, je suis François Baeckelandt, professeur de français et programmiste entre deux cours !
          Pour plus d'info, rendez-vous sur mon [site](https://bfrs-fle.tb.ru/) ! Bon travail !""") 
          
 # Titre
@@ -260,5 +258,10 @@ else:
     fig.update_traces(hoverinfo='skip', hovertemplate=None)
     st.plotly_chart(fig, use_container_width=True)
 
-#--- Exercice --- 
-afficher_exercice(filtered_df)
+#--- Exercice ---
+# Initialisation une seule fois
+if "exo_obj" not in st.session_state:
+    st.session_state.exo_obj = ExoQuestion(filtered_df, n=10)
+
+# Affichage
+st.session_state.exo_obj.afficher_exercice()
