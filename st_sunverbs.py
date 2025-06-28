@@ -262,10 +262,5 @@ else:
 # Initialisation une seule fois
 if ("exo_obj" not in st.session_state) or (len(filtered_df) != len(st.session_state.exo_obj.df_exo)):
     st.session_state.exo_obj = ExoQuestion(filtered_df, n=10)
-    st.session_state.exo_obj.init_session_state()
-
-
-st.session_state.exo_obj.afficher_exercice()
-
 # Affichage
 st.session_state.exo_obj.afficher_exercice()
