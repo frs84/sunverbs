@@ -2,8 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import locale
-#from exercise import Ligne, ExoQuestion
-from exercise import afficher_exercice
+from exo import Ligne, ExoQuestion
 
 try:
     # Linux (Streamlit Cloud)
@@ -18,6 +17,8 @@ except locale.Error:
 
 # Configuration de la page
 st.set_page_config(page_title="Sunverbs")
+
+
 
 # CSS : coches noires sans fond
 st.markdown("""
@@ -36,7 +37,7 @@ st.markdown("""
 def charger_donnees():
     return pd.read_csv("sunverbs.csv")
 
-df = charger_donnees()
+df = charger_donnees().drop_duplicates()
 
 
 # Vérification des colonnes nécessaires
@@ -245,6 +246,8 @@ if st.session_state.selected_personnes:
 
 filtered_df = df[mask]
 
+
+
 # --- Résultat ---
 if filtered_df.empty:
     st.warning("Aucune donnée sélectionnée.")
@@ -259,6 +262,20 @@ else:
     fig.update_traces(hoverinfo='skip', hovertemplate=None)
     st.plotly_chart(fig, use_container_width=True)
 
+#--- Exercice ---
 
-#--- Exercice --- 
-afficher_exercice(filtered_df)
+# Initialisation / réinitialisation de l'exercice
+if ("exo_obj" not in st.session_state or
+    len(filtered_df) != len(st.session_state.exo_obj.df_exo) or
+    st.session_state.get("recommencer_exo", False)):
+    
+    st.session_state.exo_obj = ExoQuestion(filtered_df, n=10)
+    st.session_state.recommencer_exo = False  # Reset après initialisation
+
+# Affichage de l’exercice
+exo = st.session_state.exo_obj
+exo.afficher_exercice()
+
+
+
+
