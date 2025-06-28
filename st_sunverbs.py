@@ -33,7 +33,7 @@ st.markdown("""
 
 @st.cache_data
 def charger_donnees():
-    return pd.read_csv("data/sunverbs.csv")
+    return pd.read_csv("sunverbs.csv")
 
 df = charger_donnees()
 
