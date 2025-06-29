@@ -23,8 +23,8 @@ class Ligne:
 class ExoQuestion:
     def __init__(self, df, n=10):
         self.df_exo = df.drop_duplicates()
-        n = min(n, len(self.df_exo))  # Pour éviter de dépasser
-        self.lignes = [Ligne(ligne) for ligne in self.df_exo.sample(n).to_dict(orient="records")]
+        nb = min(n, len(self.df_exo))
+        self.lignes = [Ligne(ligne) for ligne in self.df_exo.sample(nb).to_dict(orient="records")]
 
         # Écrase l'état précédent sans condition
         st.session_state.exo_index = 0
@@ -35,8 +35,8 @@ class ExoQuestion:
     def afficher_exercice(self):
         col1,col2= st.columns(2)
 
-        recommencer = col2.button("🔁 Recommencer l'exercice", key="recommencer_en_dehors_form")
         suivant = col1.button("⏭ Question suivante",key="question suivante")
+        recommencer = col2.button("🔁 Recommencer l'exercice", key="recommencer_en_dehors_form")
         
         if suivant:
             st.session_state.exo_index += 1
@@ -44,25 +44,14 @@ class ExoQuestion:
             st.session_state.reponse_exo = ""
         
         if recommencer:
-            st.session_state.recommencer_exo = True
+            del st.session_state["exo_obj"]
             st.rerun()
 
         i = st.session_state.exo_index
-
-        if i >= len(self.lignes):
-            st.success(f"✅ Exercice terminé ! Score : {st.session_state.score} / {len(self.lignes)}")
-            if st.button("🔁 Recommencer l'exercice", key="recommencer_final"):
-                del st.session_state["exo_obj"]
-                st.rerun()
-            return
-
         ligne = self.lignes[i]
 
         st.markdown(f"### 📝 Question {i + 1} sur {len(self.lignes)}")
         ligne.afficher_question()
-
-        
-
 
         with st.form(f"form_{i}"):
             reponse = st.text_input(
@@ -79,12 +68,11 @@ class ExoQuestion:
                 st.success("✅ Bonne réponse !")
                 st.session_state.score += 1
             else:
-                st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>"
-                            f"❌ Oups. La réponse correcte est : {ligne.forme}."
-                            f"</div>",unsafe_allow_html=True)
+                st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>"f"❌ Oups. La réponse correcte est : {ligne.forme}."f"</div>",unsafe_allow_html=True)
             st.session_state.question_validee = True
             st.session_state.reponse_exo = reponse
 
         
-
-        
+        if i >= (len(self.lignes)-1) and (st.session_state.question_validee):
+             st.success(f"✅ Exercice terminé ! Score : {st.session_state.score} / {len(self.lignes)}")
+             st.stop()
