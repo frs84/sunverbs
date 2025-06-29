@@ -51,7 +51,10 @@ class ExoQuestion:
 
         if i >= len(self.lignes):
             st.success(f"✅ Exercice terminé ! Score : {st.session_state.score} / {len(self.lignes)}")
-            
+            if st.button("🔁 Recommencer l'exercice", key="recommencer_final"):
+                del st.session_state["exo_obj"]
+                st.rerun()
+            return
 
         ligne = self.lignes[i]
 
