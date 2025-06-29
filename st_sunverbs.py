@@ -151,7 +151,7 @@ with st.expander("Temps et modes", expanded=False):
 
 # Initialisation
 if "selected_personnes" not in st.session_state:
-    st.session_state.selected_personnes = ["je"]
+    st.session_state.selected_personnes = set(["je"])
 
 with st.expander("Personnes", expanded=False):
     col1, col2 = st.columns(2)
