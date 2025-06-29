@@ -39,7 +39,7 @@ class ExoQuestion:
         recommencer = col2.button("🔁 Recommencer l'exercice", key="recommencer_en_dehors_form")
         
         if suivant:
-            if i >= (len(self.lignes)-1):
+            if st.session_state.exo_index >= (len(self.lignes)-1):
                 st.stop()
             st.session_state.exo_index += 1
             st.session_state.question_validee = False
