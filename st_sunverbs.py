@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import locale
-from exercice import Ligne, ExoQuestion
+from exercise import Ligne, ExoQuestion
 
 try:
     # Linux (Streamlit Cloud)
