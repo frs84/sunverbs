@@ -92,8 +92,9 @@ modes = [m for m in ordered_modes if m in mode_to_temps]
 # Initialisation des sélections
 if "selected_verbs" not in st.session_state:
     st.session_state.selected_verbs = {
-        g: set(df[df["groupe"] == g]["modèle"].dropna().unique()) for g in groupes
-    }
+    g: set(df[df["groupe"] == g]["modèle"].dropna().unique()) if g == "-er" else set()
+    for g in groupes
+}
 
 if "selected_modes_temps" not in st.session_state:
     st.session_state.selected_modes_temps = set(
@@ -150,7 +151,7 @@ with st.expander("Temps et modes", expanded=False):
 
 # Initialisation
 if "selected_personnes" not in st.session_state:
-    st.session_state.selected_personnes = set(personnes_presentes)
+    st.session_state.selected_personnes = ["je"]
 
 with st.expander("Personnes", expanded=False):
     col1, col2 = st.columns(2)
