@@ -23,6 +23,7 @@ class Ligne:
 class ExoQuestion:
     def __init__(self, df, n=10):
         self.df_exo = df.drop_duplicates()
+        n = min(n, len(self.df_exo))  # Pour éviter de dépasser
         self.lignes = [Ligne(ligne) for ligne in self.df_exo.sample(n).to_dict(orient="records")]
 
         # Écrase l'état précédent sans condition
