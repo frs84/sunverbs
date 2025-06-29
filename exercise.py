@@ -40,10 +40,11 @@ class ExoQuestion:
         
         if suivant:
             if st.session_state.exo_index >= (len(self.lignes)-1):
-                st.stop()
-            st.session_state.exo_index += 1
-            st.session_state.question_validee = False
-            st.session_state.reponse_exo = ""
+                pass
+            else:
+                st.session_state.exo_index += 1
+                st.session_state.question_validee = False
+                st.session_state.reponse_exo = ""
         
         if recommencer:
             del st.session_state["exo_obj"]
