@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import locale
-from exercise import Ligne, ExoQuestion
+from exercice import Ligne, ExoQuestion
 
 try:
     # Linux (Streamlit Cloud)
@@ -18,8 +18,6 @@ except locale.Error:
 # Configuration de la page
 st.set_page_config(page_title="Sunverbs")
 
-
-
 # CSS : coches noires sans fond
 st.markdown("""
     <style>
@@ -33,12 +31,18 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# Titre
+st.title("🌞 Sunverbes")
+st.write("""Bonjour, je suis François Baeckelandt, professeur de français et programmiste entre deux cours !
+         Pour plus d'info, rendez-vous sur mon [site](https://bfrs-fle.tb.ru/) ! Bon travail !""") 
+
+#------------------DONNEES ET FILTRES--------------------------------------------------------------------#
+
 @st.cache_data
 def charger_donnees():
     return pd.read_csv("sunverbs.csv")
 
 df = charger_donnees().drop_duplicates()
-
 
 # Vérification des colonnes nécessaires
 required_cols = ['groupe', 'modèle', 'mode', 'temps', 'formes']
@@ -47,19 +51,9 @@ for col in required_cols:
         st.error(f"Colonne manquante : {col}")
         st.stop()
 
-# Chargement des personnes
-personnes_presentes = sorted(df["personne"].dropna().unique())
-
-#st.image("data/photo.jpg", width=100)
-st.write("""Bonjour, je m'appelle François Baeckelandt, je suis professeur de français et programmiste entre deux cours !
-         Pour plus d'info, rendez-vous sur mon [site](https://bfrs-fle.tb.ru/) ! 
-         Bon travail !""") 
-         
-# Titre
-st.title("🌞 Sunverbes")
-
 # Valeurs uniques
 groupes = sorted(df['groupe'].dropna().unique())
+personnes_presentes = sorted(df["personne"].dropna().unique())
 
 # Dictionnaire : mode → temps
 mode_to_temps = {}
@@ -84,21 +78,22 @@ for mode in mode_to_temps:
     else:
         mode_to_temps[mode] = sorted(mode_to_temps[mode])
 
-
 # Ordre affiché des modes
 ordered_modes = ['indicatif', 'conditionnel', 'subjonctif']
 modes = [m for m in ordered_modes if m in mode_to_temps]
 
-# Initialisation des sélections
+# Initialisation des sélections verbes et temps 
+
 if "selected_verbs" not in st.session_state:
     st.session_state.selected_verbs = {
-    g: set(df[df["groupe"] == g]["modèle"].dropna().unique()) if g == "-er" else set()
-    for g in groupes
-}
+        g: set(df[df["groupe"] == g]["modèle"].dropna().unique()) for g in groupes}
 
 if "selected_modes_temps" not in st.session_state:
     st.session_state.selected_modes_temps = set(
-        (m, t) for m in modes for t in mode_to_temps[m]
+        (m, t)
+        for m in modes
+        for t in mode_to_temps.get(m, [])
+        if m == "indicatif"
     )
 
 # Boutons Tout cocher / Tout décocher
@@ -149,9 +144,11 @@ with st.expander("Temps et modes", expanded=False):
                     st.rerun()
 
 
-# Initialisation
+# Initialisation de la sélection personne
+
 if "selected_personnes" not in st.session_state:
     st.session_state.selected_personnes = set(["je"])
+
 
 with st.expander("Personnes", expanded=False):
     col1, col2 = st.columns(2)
@@ -246,13 +243,24 @@ if st.session_state.selected_modes_temps:
 if st.session_state.selected_personnes:
     mask &= df["personne"].isin(st.session_state.selected_personnes)
 
-filtered_df = df[mask]
+#-------------Verifier si filtre contient quelque chose6-------------------------#
+tout_vide = (
+    not any(st.session_state.selected_verbs.values()) and
+    not st.session_state.selected_modes_temps and
+    not st.session_state.selected_personnes)
+
+if tout_vide:
+    st.warning("Aucune donnée sélectionnée. Coche au moins une option pour voir le contenu.")
+    st.stop()
+else:
+    filtered_df = df[mask]
 
 
 
-# --- Résultat ---
+# --- Afficher le graphique --- #
 if filtered_df.empty:
     st.warning("Aucune donnée sélectionnée.")
+    st.stop()
 else:
     fig = px.sunburst(
         filtered_df,
@@ -266,17 +274,23 @@ else:
 
 #--- Exercice ---
 
-# Initialisation / réinitialisation de l'exercice
-if ("exo_obj" not in st.session_state or
-    len(filtered_df) != len(st.session_state.exo_obj.df_exo) or
-    st.session_state.get("recommencer_exo", False)):
-    
-    st.session_state.exo_obj = ExoQuestion(filtered_df, n=10)
-    st.session_state.recommencer_exo = False  # Reset après initialisation
+# --- après avoir construit filtered_df ---
 
-# Affichage de l’exercice
-exo = st.session_state.exo_obj
-exo.afficher_exercice()
+if filtered_df.empty:
+    st.warning("Aucune donnée sélectionnée pour générer l'exercice.")
+else:
+    # Créer / réinitialiser exo_obj si besoin
+    if (
+        "exo_obj" not in st.session_state
+        or len(filtered_df) != len(st.session_state.exo_obj.df_exo)
+        or st.session_state.get("recommencer_exo", False)
+    ):
+        st.session_state.exo_obj = ExoQuestion(filtered_df, n=10)
+        st.session_state.recommencer_exo = False
+
+    # Afficher l'exercice
+    exo = st.session_state.exo_obj
+    exo.afficher_exercice()
 
 
 
