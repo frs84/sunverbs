@@ -33,7 +33,7 @@ st.markdown("""
 
 # Titre
 st.title("🌞 Sunverbes")
-st.write("""Bonjour, je suis François Baeckelandt, professeur de français et programmiste entre deux cours !
+st.write("""Bonjour, je m'appelle François Baeckelandt, je suis professeur de français et programmiste entre deux cours !
          Pour plus d'info, rendez-vous sur mon [site](https://bfrs-fle.tb.ru/) ! Bon travail !""") 
 
 #------------------DONNEES ET FILTRES--------------------------------------------------------------------#
