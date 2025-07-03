@@ -117,6 +117,3 @@ else:
         exo.afficher_exercice()
 
 
-    if st.session_state.show_exo2 == True:
-        exo2.afficher_exercice()
-
