@@ -43,7 +43,7 @@ st.write("""Bonjour, je m'appelle François Baeckelandt, je suis professeur de f
 #---Charger les données et filtrer---#
 @st.cache_data
 def charger_donnees():
-    return pd.read_csv("data/sunverbs.csv")
+    return pd.read_csv("sunverbs.csv")
 
 df = charger_donnees().drop_duplicates()
 
