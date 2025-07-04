@@ -117,24 +117,4 @@ else:
     if st.session_state.show_exo1 == True:
         exo.afficher_exercice()
 
-#---deuxième exo---#
-
-    if (
-        "exo2_obj" not in st.session_state
-        or len(filtered_df) != len(st.session_state.exo2_obj.df_exo)
-        or st.session_state.get("recommencer_exo2", False)
-    ):
-        st.session_state.exo2_obj = Exo_devine_temps(filtered_df, n=10)
-        st.session_state.exo2_recommencer = False
-
-    # Afficher l'exercice
-    exo2 = st.session_state.exo2_obj
-
-    if 'show_exo2' not in st.session_state:
-        st.session_state.show_exo2 = False
-    if st.button("🎯 Exercice 2"):
-        st.session_state.show_exo2 = not st.session_state.show_exo2
-    if st.session_state.show_exo2 == True:
-        exo2.afficher_exercice()
-
 
