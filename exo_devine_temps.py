@@ -27,9 +27,17 @@ class Exo_devine_temps:
 
     def build_option(self):
         plotly_colors = [
-        "#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f",
-        "#edc949", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab"
-    ]
+    "#1f77b4",  # bleu
+    "#ff7f0e",  # orange
+    "#2ca02c",  # vert
+    "#d62728",  # rouge
+    "#9467bd",  # violet
+    "#8c564b",  # brun
+    "#e377c2",  # rose
+    "#7f7f7f",  # gris
+    "#bcbd22",  # jaune verdâtre
+    "#17becf",  # turquoise
+]
 
         data = []
         modes = self.df_MT["mode"].unique()
