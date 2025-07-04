@@ -26,16 +26,10 @@ class Exo_devine_temps:
         return unique
 
     def build_option(self):
-        plotly_like_colors = ["#4e79a7",  # bleu doux
-                              "#f28e2c",  # orange
-                              "#e15759",  # rouge
-                              "#76b7b2",  # vert/bleu
-                              "#59a14f",  # vert
-                              "#edc949",  # jaune
-                              "#af7aa1",  # violet
-                              "#ff9da7",  # rose clair
-                              "#9c755f",  # brun clair
-                              "#bab0ab"]  # gris doux]
+        plotly_colors = [
+        "#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f",
+        "#edc949", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab"
+    ]
 
         data = []
         modes = self.df_MT["mode"].unique()
