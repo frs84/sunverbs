@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from exo_ecris_forme import Ligne
 from streamlit_echarts import st_echarts
-
 class Exo_devine_temps:
     def __init__(self, df, n=10):
         self.df_exo = df
@@ -27,24 +26,52 @@ class Exo_devine_temps:
         return unique
 
     def build_option(self):
-        # Construire la structure 'data' pour Sunburst ECharts
+        plotly_colors = [
+            "#636efa", "#ef553b", "#00cc96", "#ab63fa", "#ffa15a",
+            "#19d3f3", "#ff6692", "#b6e880", "#ff97ff", "#fecb52",
+        ]
+
         data = []
-        for mode in self.df_MT["mode"].unique():
+        modes = self.df_MT["mode"].unique()
+
+        for mode in modes:
             enfants = []
-            for temps in self.df_MT[self.df_MT["mode"] == mode]["temps"]:
-                enfants.append({"name": temps, "value": 1})
+            temps_list = self.df_MT[self.df_MT["mode"] == mode]["temps"]
+            for i, temps in enumerate(temps_list):
+                couleur = plotly_colors[i % len(plotly_colors)]
+                enfants.append({
+                    "name": temps,
+                    "value": 1,
+                    "itemStyle": {"color": couleur}
+                })
             data.append({"name": mode, "children": enfants})
 
         option = {
+            "color": plotly_colors,  # utile si plusieurs modes
             "series": [{
                 "type": "sunburst",
                 "data": data,
-                "radius": [0, "90%"],
-                "label": {"rotate": "radial"},
+                "radius": ["10%", "90%"],
+                "label": {
+                    "rotate": """function(params) {
+                        if(params.data.depth === 1){
+                            return 'radial';
+                        }
+                        if(params.data.depth === 2){
+                            return 0;
+                        }
+                        return 0;
+                    }"""
+                },
+                "emphasis": {"focus": "ancestor"},
+                "nodeClick": False
             }],
-            "tooltip": {"trigger": "item"},
+            "tooltip": {"show": False},
         }
+
         return option
+
+
 
     def check_reponse(self, ligne, parent, label):
         possibles = self.df_exo[self.df_exo["formes"] == ligne.forme]
@@ -87,7 +114,14 @@ class Exo_devine_temps:
 
         # Afficher le Sunburst avec st_echarts
         # Écoute des clics sur les secteurs
-        events = st_echarts(self.option, height=500, key="sunburst")
+        events = st_echarts(
+    self.option,
+    height=500,
+    key="sunburst",
+    events={
+        "click": "function(params) { return params.data; }"
+    }
+)
 
         # 'events' contient la donnée du dernier clic (ou None)
         if events and not st.session_state.exo2_question_validee:
