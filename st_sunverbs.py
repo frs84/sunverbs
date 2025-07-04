@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import locale
 from exo_ecris_forme import ExoQuestion
+from exo_devine_temps import Exo_devine_temps
 from filtres import check_colonnes, FiltreSunverbs
 
 try:
