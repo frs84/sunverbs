@@ -35,7 +35,7 @@ class Exo_devine_temps:
                               "#af7aa1",  # violet
                               "#ff9da7",  # rose clair
                               "#9c755f",  # brun clair
-                              "#bab0ab",  # gris doux]
+                              "#bab0ab"]  # gris doux]
 
         data = []
         modes = self.df_MT["mode"].unique()
