@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 from exo_ecris_forme import Ligne
 from streamlit_echarts import st_echarts
+import json
+
 class Exo_devine_temps:
     def __init__(self, df, n=10):
         self.df_exo = df
@@ -27,39 +29,57 @@ class Exo_devine_temps:
 
     def build_option(self):
         plotly_colors = [
-    "#1f77b4",  # bleu
-    "#ff7f0e",  # orange
-    "#2ca02c",  # vert
-    "#d62728",  # rouge
-    "#9467bd",  # violet
-    "#8c564b",  # brun
-    "#e377c2",  # rose
-    "#7f7f7f",  # gris
-    "#bcbd22",  # jaune verdâtre
-    "#17becf",  # turquoise
-]
+            "#C40C0C",  # rouge orangé
+            "#0713C0",  # bleu
+            "#21A884",  # vert
+           ]
 
-        data = []
         modes = self.df_MT["mode"].unique()
+        data = []
+        un_seul_mode = len(modes) == 1
 
-        for mode in modes:
+        if un_seul_mode:
+            # Un seul mode : créer un nœud racine unique avec value et label center
+            mode = modes[0]
+            couleur = plotly_colors[0]
             enfants = []
             temps_list = self.df_MT[self.df_MT["mode"] == mode]["temps"]
-            for i, temps in enumerate(temps_list):
-                couleur = plotly_colors[i % len(plotly_colors)]
-                enfants.append({
-                    "name": temps,
-                    "value": 1,
-                    "itemStyle": {"color": couleur}
+            for temps in temps_list:
+                enfants.append({"name": temps, "value": 1})
+
+            data = [{
+                "name": mode,
+                "value": len(enfants),  # OBLIGATOIRE pour que ce nœud occupe le centre
+                "itemStyle": {"color": couleur},
+                "label": {
+                    "show": True,
+                    "position": "center",
+                    "fontSize": 20,
+                    "formatter": "{b}",
+                    "rotate": 0,
+                    "align": "center",
+                    },
+                "children": enfants
+            }]
+        else:
+            # Plusieurs modes : chacun un nœud racine, pas de value, pas de label center
+            for mode in modes:
+                enfants = []
+                temps_list = self.df_MT[self.df_MT["mode"] == mode]["temps"]
+                for temps in temps_list:
+                    enfants.append({"name": temps, "value": 1})
+                data.append({
+                    "name": mode,
+                    "value": len(enfants),
+                    "children": enfants
                 })
-            data.append({"name": mode, "children": enfants})
 
         option = {
-            "color": plotly_colors,  # utile si plusieurs modes
+            "color": plotly_colors,
             "series": [{
                 "type": "sunburst",
                 "data": data,
-                "radius": ["10%", "90%"],
+                "radius": ["0%", "90%"],
                 "label": {
                     "rotate": """function(params) {
                         if(params.data.depth === 1){
@@ -71,13 +91,14 @@ class Exo_devine_temps:
                         return 0;
                     }"""
                 },
-                "emphasis": {"focus": "ancestor"},
-                "nodeClick": False
+                "emphasis": {"focus": "none"},
+                "nodeClick": True
             }],
-            "tooltip": {"show": False},
+            "tooltip": {"show": False}
         }
-
         return option
+
+
 
 
 
