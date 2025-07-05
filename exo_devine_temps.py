@@ -145,7 +145,7 @@ class Exo_devine_temps:
         # Écoute des clics sur les secteurs
         events = st_echarts(
     self.option,
-    height=500,
+    height=300,
     key="sunburst",
     events={
         "click": "function(params) { return params.data; }"
