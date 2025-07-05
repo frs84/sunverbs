@@ -117,7 +117,7 @@ else:
     if st.session_state.show_exo1 == True:
         exo.afficher_exercice()
 
-#---deuxième exo---#
+"""#---deuxième exo---#
 
     if (
         "exo2_obj" not in st.session_state
@@ -138,3 +138,4 @@ else:
         exo2.afficher_exercice()
 
 
+"""
