@@ -45,7 +45,7 @@ class ExoQuestion:
     def afficher_exercice(self):
         st.divider()
         st.subheader("Exercice 1.")
-        col1,col2= st.columns(3)
+        col1,col2= st.columns(2)
 
         suivant = col1.button("⏭",key="question suivante")
         recommencer = col2.button("🔁", key="recommencer_en_dehors_form")
