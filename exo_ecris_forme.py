@@ -64,7 +64,7 @@ class ExoQuestion:
         i = st.session_state.exo_index
         ligne = self.lignes[i]
 
-        col1.st.markdown(f"### 📝 Question {i + 1} sur {len(self.lignes)}")
+        col1.markdown(f"### 📝 Question {i + 1} sur {len(self.lignes)}")
         ligne.afficher_question()
 
         with st.form(f"form_{i}"):
