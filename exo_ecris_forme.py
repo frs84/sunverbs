@@ -73,7 +73,7 @@ class ExoQuestion:
             if reponse.strip() == "":
                 st.info(f"ℹ️ La réponse correcte est : {ligne.forme}")
             elif ligne.check_reponse(reponse):
-                st.success("✅ Bonne réponse !")
+                st.toast("✅ Bonne réponse !")
                 st.session_state.score += 1
             else:
                 st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>"f"❌ Oups. La réponse correcte est : {ligne.forme}."f"</div>",unsafe_allow_html=True)
