@@ -45,11 +45,8 @@ class ExoQuestion:
     def afficher_exercice(self):
         st.divider()
         st.subheader("Exercice 1.")
-        col1,col2= st.columns(2)
-
-        suivant = col1.button("⏭",key="question suivante", use_container_width=True)
-        recommencer = col2.button("🔁", key="recommencer_en_dehors_form",use_container_width=True)
         
+        suivant = st.button("⏭ Question suivante",key="question suivante", use_container_width=True)
         if suivant:
             if st.session_state.exo_index >= (len(self.lignes)-1):
                 st.stop()
@@ -57,10 +54,7 @@ class ExoQuestion:
             st.session_state.question_validee = False
             st.session_state.reponse_exo = ""
         
-        if recommencer:
-            del st.session_state["exo_obj"]
-            st.rerun()
-
+        
         i = st.session_state.exo_index
         ligne = self.lignes[i]
 
@@ -90,3 +84,10 @@ class ExoQuestion:
         if i >= (len(self.lignes)-1) and (st.session_state.question_validee):
              st.success(f"✅ Exercice terminé ! Score : {st.session_state.score} / {len(self.lignes)}")
              st.stop()
+
+        recommencer = st.button("🔁", key="recommencer_en_dehors_form",use_container_width=True)
+        if recommencer:
+            del st.session_state["exo_obj"]
+            st.rerun()
+        st.divider()
+
