@@ -146,9 +146,8 @@ class Exo_devine_temps:
                 st.session_state.exo2_score += 1
                 
             else:
-                st.toast(f"""❌ Oups. La réponse correcte est :
-                         \n{ligne.mode.capitalize()} {ligne.temps}.""")
-                #st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>❌ Oups. La réponse correcte est : {ligne.mode} {ligne.temps}.</div>", unsafe_allow_html=True)
+                #st.toast(f"""❌ Oups. La réponse correcte est : {ligne.mode.capitalize()} {ligne.temps}.""")
+                st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>❌ Oups. La réponse correcte est : {ligne.mode} {ligne.temps}.</div>", unsafe_allow_html=True)
             st.session_state.exo2_question_validee = True
 
             if i >= (len(self.lignes) - 1) and st.session_state.exo2_question_validee:
