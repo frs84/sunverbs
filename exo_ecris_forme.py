@@ -45,10 +45,10 @@ class ExoQuestion:
     def afficher_exercice(self):
         st.divider()
         st.subheader("Exercice 1.")
-        col1,col2,col3= st.columns(3)
+        col1,col2= st.columns(3)
 
-        suivant = col2.button("⏭",key="question suivante")
-        recommencer = col3.button("🔁", key="recommencer_en_dehors_form")
+        suivant = col1.button("⏭",key="question suivante")
+        recommencer = col2.button("🔁", key="recommencer_en_dehors_form")
         
         if suivant:
             if st.session_state.exo_index >= (len(self.lignes)-1):
@@ -64,7 +64,7 @@ class ExoQuestion:
         i = st.session_state.exo_index
         ligne = self.lignes[i]
 
-        col1.markdown(f"### 📝 Question {i + 1} sur {len(self.lignes)}")
+        st.markdown(f"### 📝 Question {i + 1} sur {len(self.lignes)}")
         ligne.afficher_question()
 
         with st.form(f"form_{i}"):
