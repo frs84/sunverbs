@@ -45,7 +45,7 @@ class Exo_devine_temps:
             enfants = []
             temps_list = self.df_MT[self.df_MT["mode"] == mode]["temps"]
             for temps in temps_list:
-                enfants.append({"name": temps, "value": 1})
+                enfants.append({"name": temps, "value": 1,"parent_name":mode})
 
             data = [{
                 "name": mode,
@@ -62,12 +62,11 @@ class Exo_devine_temps:
                 "children": enfants
             }]
         else:
-            # Plusieurs modes : chacun un nœud racine, pas de value, pas de label center
             for mode in modes:
                 enfants = []
                 temps_list = self.df_MT[self.df_MT["mode"] == mode]["temps"]
                 for temps in temps_list:
-                    enfants.append({"name": temps, "value": 1})
+                    enfants.append({"name": temps, "value": 1,"parent_name":mode})
                 data.append({
                     "name": mode,
                     "value": len(enfants),
@@ -79,28 +78,20 @@ class Exo_devine_temps:
             "series": [{
                 "type": "sunburst",
                 "data": data,
-                "radius": ["0%", "90%"],
+                "radius": ["20%", "90%"],
                 "label": {
                     "rotate": """function(params) {
                         if(params.data.depth === 1){
-                            return 'radial';
-                        }
+                            return 'radial';}
                         if(params.data.depth === 2){
-                            return 0;
-                        }
-                        return 0;
-                    }"""
-                },
+                            return 0;}
+                        return 0;}"""},
                 "emphasis": {"focus": "none"},
-                "nodeClick": True
+                "nodeClick": False
             }],
             "tooltip": {"show": False}
         }
         return option
-
-
-
-
 
     def check_reponse(self, ligne, parent, label):
         possibles = self.df_exo[self.df_exo["formes"] == ligne.forme]
@@ -117,10 +108,8 @@ class Exo_devine_temps:
     def afficher_exercice(self):
         st.divider()
         st.subheader("""\nExercice 2.""")
-        col1, col2 = st.columns(2)
-
-        recommencer = col2.button("🔁 Recommencer l'exercice", key="exo2 recommencer_en_dehors_form")
-        suivant = col1.button("⏭ Question suivante", key="exo2 question suivante")
+        
+        suivant = st.button("⏭ Question suivante", key="exo2 question suivante")
 
         if suivant:
             if st.session_state.exo2_index >= (len(self.lignes) - 1):
@@ -131,10 +120,7 @@ class Exo_devine_temps:
                 st.session_state.exo2_reponse = None
                 st.rerun()
 
-        if recommencer:
-            del st.session_state["exo2_obj"]
-            st.rerun()
-
+        
         i = st.session_state.exo2_index
         ligne = self.lignes[i]
 
@@ -144,39 +130,32 @@ class Exo_devine_temps:
         # Afficher le Sunburst avec st_echarts
         # Écoute des clics sur les secteurs
         events = st_echarts(
-    self.option,
-    height=350,
-    key="sunburst",
-    events={
-        "click": "function(params) { return params.data; }"
-    }
-)
-
+            self.option,
+            height=450,
+            key="sunburst",
+            events={"click": "function(params) {return params.data;}"})
+        
         # 'events' contient la donnée du dernier clic (ou None)
         if events and not st.session_state.exo2_question_validee:
-            # Exemple de structure event: {"name":"présent","dataIndex":1,...}
             label = events.get("name")
-            parent = None
-
-            # Trouver le parent mode
-            # Ici on cherche dans self.option['series'][0]['data']
-            for item in self.option["series"][0]["data"]:
-                if label == item["name"]:
-                    parent = None  # mode cliqué (pas temps)
-                    break
-                for child in item.get("children", []):
-                    if label == child["name"]:
-                        parent = item["name"]
-                        break
-            
+            parent = events.get("parent_name")
+                        
             reponse = self.check_reponse(ligne, parent, label)
             if reponse == "Correct":
-                st.success("✅ Bonne réponse !")
+                st.toast("✅ Bonne réponse !")
                 st.session_state.exo2_score += 1
+                
             else:
-                st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>❌ Oups. La réponse correcte est : {ligne.mode} {ligne.temps}.</div>", unsafe_allow_html=True)
+                st.toast(f"""❌ Oups. La réponse correcte est :
+                         \n{ligne.mode.capitalize()} {ligne.temps}.""")
+                #st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>❌ Oups. La réponse correcte est : {ligne.mode} {ligne.temps}.</div>", unsafe_allow_html=True)
             st.session_state.exo2_question_validee = True
 
             if i >= (len(self.lignes) - 1) and st.session_state.exo2_question_validee:
-                st.success(f"✅ Exercice terminé ! Score : {st.session_state.exo2_score} / {len(self.lignes)}")
+                st.toast(f"✅ Exercice terminé ! Score : {st.session_state.exo2_score} / {len(self.lignes)}")
                 st.stop()
+        
+        recommencer = st.button("🔁 Recommencer l'exercice", key="exo2 recommencer_en_dehors_form")
+        if recommencer:
+            del st.session_state["exo2_obj"]
+            st.rerun()
