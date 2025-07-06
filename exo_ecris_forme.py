@@ -47,8 +47,8 @@ class ExoQuestion:
         st.subheader("Exercice 1.")
         col1,col2,col3= st.columns(3)
 
-        suivant = col1.button("⏭",key="question suivante")
-        recommencer = col2.button("🔁", key="recommencer_en_dehors_form")
+        suivant = col2.button("⏭",key="question suivante")
+        recommencer = col3.button("🔁", key="recommencer_en_dehors_form")
         
         if suivant:
             if st.session_state.exo_index >= (len(self.lignes)-1):
