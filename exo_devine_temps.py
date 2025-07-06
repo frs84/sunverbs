@@ -108,7 +108,12 @@ class Exo_devine_temps:
     def afficher_exercice(self):
         st.divider()
         st.subheader("""\nExercice 2.""")
-        
+
+        recommencer = st.button("🔁 Recommencer l'exercice", key="exo2 recommencer_en_dehors_form")
+        if recommencer:
+            del st.session_state["exo2_obj"]
+            st.rerun()
+            
         suivant = st.button("⏭ Question suivante", key="exo2 question suivante")
 
         if suivant:
@@ -154,7 +159,4 @@ class Exo_devine_temps:
                 st.toast(f"✅ Exercice terminé ! Score : {st.session_state.exo2_score} / {len(self.lignes)}")
                 st.stop()
         
-        recommencer = st.button("🔁 Recommencer l'exercice", key="exo2 recommencer_en_dehors_form")
-        if recommencer:
-            del st.session_state["exo2_obj"]
-            st.rerun()
+        
