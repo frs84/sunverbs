@@ -35,8 +35,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-with st.sidebar:
-    st.header("Menu pour le futur")
+
     
 
 #---Titre---#
