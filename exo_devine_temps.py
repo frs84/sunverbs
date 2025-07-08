@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from exo_ecris_forme import Ligne
+from exo_ecris import Ligne
 from streamlit_echarts import st_echarts
 import json
 
@@ -14,10 +14,10 @@ class Exo_devine_temps:
         self.option = self.build_option()
 
         # Initialisation de session_state
-        st.session_state.exo2_index = 0
-        st.session_state.exo2_score = 0
-        st.session_state.exo2_question_validee = False
-        st.session_state.exo2_reponse_exo = None
+        st.session_state.exo_devine_index = 0
+        st.session_state.exo_devine_score = 0
+        st.session_state.exo_devine_question_validee = False
+        st.session_state.exo_devine_reponse = None
     
     def afficher_question(self, ligne):
         st.markdown(f"Quelle est le mode et le temps du verbe suivant : **{ligne.verbe}** - {ligne.forme} ?")
@@ -106,27 +106,24 @@ class Exo_devine_temps:
             return False
 
     def afficher_exercice(self):
-        st.divider()
-        st.subheader("""\nExercice 2.""")
-
-        recommencer = st.button("🔁 Recommencer l'exercice", key="exo2 recommencer_en_dehors_form")
+        
+        recommencer = st.button("🔁 Recommencer l'exercice", key="exo2 recommencer")
         if recommencer:
             del st.session_state["exo2_obj"]
             st.rerun()
-            
-        suivant = st.button("⏭ Question suivante", key="exo2 question suivante")
-
+        
+        suivant = st.button("⏭ Question suivante", key="exo_devine question suivante")
         if suivant:
-            if st.session_state.exo2_index >= (len(self.lignes) - 1):
+            if st.session_state.exo_devine_index >= (len(self.lignes) - 1):
                 pass
             else:
-                st.session_state.exo2_index += 1
-                st.session_state.exo2_question_validee = False
-                st.session_state.exo2_reponse = None
+                st.session_state.exo_devine_index += 1
+                st.session_state.exo_devine_question_validee = False
+                st.session_state.exo_devine_reponse = None
                 st.rerun()
 
         
-        i = st.session_state.exo2_index
+        i = st.session_state.exo_devine_index
         ligne = self.lignes[i]
 
         st.write(f"### 📝 Question {i + 1} sur {len(self.lignes)}")
@@ -134,29 +131,31 @@ class Exo_devine_temps:
 
         # Afficher le Sunburst avec st_echarts
         # Écoute des clics sur les secteurs
+        key = f"sunburst_{st.session_state.get('exo_devine_index', 0)}"
         events = st_echarts(
             self.option,
             height=450,
-            key="sunburst",
+            key=key,
             events={"click": "function(params) {return params.data;}"})
         
         # 'events' contient la donnée du dernier clic (ou None)
-        if events and not st.session_state.exo2_question_validee:
+        if events and not st.session_state.exo_devine_question_validee:
             label = events.get("name")
             parent = events.get("parent_name")
                         
             reponse = self.check_reponse(ligne, parent, label)
             if reponse == "Correct":
                 st.toast("✅ Bonne réponse !")
-                st.session_state.exo2_score += 1
+                st.session_state.exo_devine_score += 1
                 
             else:
-                #st.toast(f"""❌ Oups. La réponse correcte est : {ligne.mode.capitalize()} {ligne.temps}.""")
-                st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>❌ Oups. La réponse correcte est : {ligne.mode} {ligne.temps}.</div>", unsafe_allow_html=True)
-            st.session_state.exo2_question_validee = True
+                st.toast(f"""❌ Oups. La réponse correcte est :
+                         \n{ligne.mode.capitalize()} {ligne.temps}.""")
+                #st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>❌ Oups. La réponse correcte est : {ligne.mode} {ligne.temps}.</div>", unsafe_allow_html=True)
+            st.session_state.exo_devine_question_validee = True
 
-            if i >= (len(self.lignes) - 1) and st.session_state.exo2_question_validee:
-                st.toast(f"✅ Exercice terminé ! Score : {st.session_state.exo2_score} / {len(self.lignes)}")
+            if i >= (len(self.lignes) - 1) and st.session_state.exo_devine_question_validee:
+                st.toast(f"✅ Exercice terminé ! Score : {st.session_state.exo_devine_score} / {len(self.lignes)}")
                 st.stop()
-        
+        st.divider()
         
