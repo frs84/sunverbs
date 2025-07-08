@@ -2,9 +2,11 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import locale
-from exo_ecris_forme import ExoQuestion
-from exo_devine_temps import Exo_devine_temps
-from filtres import check_colonnes, FiltreSunverbs
+from exo_ecris import ExoQuestion
+from exo_devine import Exo_devine_temps
+from exo_relie import Exo_relie
+from filtres import FiltreSunverbs
+
 
 try:
     # Linux (Streamlit Cloud)
@@ -33,7 +35,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
+with st.sidebar:
+    st.header("Menu pour le futur")
+    
 
 #---Titre---#
 st.title("🌞 Sunverbes")
@@ -53,13 +57,14 @@ if "filtre" not in st.session_state:
 
 filtre = st.session_state.filtre
 
+
 col1, col2 = st.columns(2)
 with col1:
     if st.button("✅ Tout cocher"):
         filtre.tout_cocher()
         st.rerun()
 with col2:
-    if st.button("❌ Tout décocher"):
+    if st.button("❌ Tout effacer"):
         filtre.tout_decocher()
         st.rerun()
 
@@ -80,16 +85,18 @@ else:
     if st.button("🌞"):
         st.session_state.show_graph = not st.session_state.show_graph
     if st.session_state.show_graph:
-        fig = px.sunburst(
-        filtered_df,
-        path=['groupe', 'modèle', 'mode', 'temps', 'formes'],
-        maxdepth=-1,
-        width=800,
-        height=700)
+        with st.spinner("Une seconde..."):
+            fig = px.sunburst(
+            filtered_df,
+            path=['groupe', 'modèle', 'mode', 'temps', 'formes'],
+            maxdepth=-1,
+            width=800,
+            height=700)
+            used_colors = []
         
-        fig.update_traces(hoverinfo='skip', hovertemplate=None)
-        st.plotly_chart(fig, use_container_width=True)
-        
+            fig.update_traces(hoverinfo='skip', hovertemplate=None)
+            st.plotly_chart(fig, use_container_width=True)
+            
 st.divider()
 #--- Exercice ---
 
@@ -97,42 +104,33 @@ st.divider()
 
 if filtered_df.empty:
     st.warning("Aucune donnée sélectionnée pour générer l'exercice.")
-else:
+    st.stop()
 
-#---Premier exo ---#
-    if (
-        "exo_obj" not in st.session_state
-        or len(filtered_df) != len(st.session_state.exo_obj.df_exo)
-        or st.session_state.get("recommencer_exo", False)
-    ):
-        st.session_state.exo_obj = ExoQuestion(filtered_df, n=10)
-        st.session_state.recommencer_exo = False
+#---Afficher les exercices---#
 
-    exo = st.session_state.exo_obj
+# Liste des exercices : (clé session_state, clé recommencer, classe, label bouton)
+liste_exos = [
+    ("exo1", Exo_relie, "🔍 Exercice 1"),
+    ("exo2", Exo_devine_temps, "🎯 Exercice 2"),
+    ("exo3", ExoQuestion, "✏️ Exercice 3"),
+]
 
-    if 'show_exo1' not in st.session_state:
-        st.session_state.show_exo1 = False
-    if st.button("✏️ Exercice 1"):
-        st.session_state.show_exo1 = not st.session_state.show_exo1
-    if st.session_state.show_exo1 == True:
+for exo_key, ExoClasse, bouton_label in liste_exos:
+    obj_key = f"{exo_key}_obj"
+    show_key = f"show_{exo_key}"
+
+    # Création ou recréation de l'objet exercice
+    if (obj_key not in st.session_state or len(filtered_df) != len(st.session_state[obj_key].df_exo)):
+        if ExoClasse == Exo_relie:
+            st.session_state[obj_key] = ExoClasse(filtered_df)
+        else:
+            st.session_state[obj_key] = ExoClasse(filtered_df, n=10)
+        
+    exo = st.session_state[obj_key]
+
+    if show_key not in st.session_state:
+        st.session_state[show_key] = False
+    if st.button(bouton_label):
+        st.session_state[show_key] = not st.session_state[show_key]
+    if st.session_state[show_key]:
         exo.afficher_exercice()
-
-    #---deuxième exo---#
-
-    if (
-        "exo2_obj" not in st.session_state
-        or len(filtered_df) != len(st.session_state.exo2_obj.df_exo)
-        or st.session_state.get("exo2_recommencer", False)
-    ):
-        st.session_state.exo2_obj = Exo_devine_temps(filtered_df, n=10)
-        st.session_state.exo2_recommencer = False
-
-    # Afficher l'exercice
-    exo2 = st.session_state.exo2_obj
-
-    if 'show_exo2' not in st.session_state:
-        st.session_state.show_exo2 = False
-    if st.button("🎯 Exercice 2"):
-        st.session_state.show_exo2 = not st.session_state.show_exo2
-    if st.session_state.show_exo2 == True:
-        exo2.afficher_exercice()
