@@ -66,7 +66,7 @@ class ExoQuestion:
                 value=st.session_state.get("exo_ecris_reponse", ""),
                 key=f"reponse"
             )
-            valider = st.form_submit_button("✅ Vérifier")
+            valider = st.form_submit_button("✅ Vérifier / Passer")
             
             if valider:
                 if st.session_state.question_validee:
