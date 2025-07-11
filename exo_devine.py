@@ -94,14 +94,15 @@ class Exo_devine_temps:
         return option
 
     def check_reponse(self, ligne, parent, label):
+        if parent is None and label in self.modes:
+            return None
+    
         possibles = self.df_exo[self.df_exo["formes"] == ligne.forme]
         modes_possibles = possibles["mode"].unique()
         temps_possibles = possibles["temps"].unique()
-
+    
         if parent in modes_possibles and label in temps_possibles:
             return "Correct"
-        elif label in self.modes:
-            st.rerun()
         else:
             return False
 
@@ -147,12 +148,13 @@ class Exo_devine_temps:
             if reponse == "Correct":
                 st.toast("✅ Bonne réponse !")
                 st.session_state.exo_devine_score += 1
+                st.session_state.exo_devine_question_validee = True
                 
-            else:
+            elif reponse is False:
                 st.toast(f"""❌ Oups. La réponse correcte est :
                          \n{ligne.mode.capitalize()} {ligne.temps}.""")
                 #st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>❌ Oups. La réponse correcte est : {ligne.mode} {ligne.temps}.</div>", unsafe_allow_html=True)
-            st.session_state.exo_devine_question_validee = True
+                st.session_state.exo_devine_question_validee = True
 
             if i >= (len(self.lignes) - 1) and st.session_state.exo_devine_question_validee:
                 st.toast(f"✅ Exercice terminé ! Score : {st.session_state.exo_devine_score} / {len(self.lignes)}")
