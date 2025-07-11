@@ -44,7 +44,7 @@ class ExoQuestion:
 
     def afficher_exercice(self):
         
-        suivant = st.button("⏭ Question suivante",key="question suivante")
+       # suivant = st.button("⏭ Question suivante",key="question suivante")
                
       #  if suivant:
       #      if st.session_state.exo_ecris_index >= (len(self.lignes)-1):
