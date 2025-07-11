@@ -74,6 +74,14 @@ class ExoQuestion:
             elif ligne.check_reponse(reponse) and not st.session_state.question_validee:
                 st.success("✅ Bonne réponse !")
                 st.session_state.score += 1
+            elif ligne.check_reponse(reponse) and st.session_state.question_validee:
+                if st.session_state.exo_ecris_index >= (len(self.lignes)-1):
+                    pass
+                else:
+                    st.session_state.exo_ecris_index += 1
+                    st.session_state.question_validee = False
+                    st.session_state.exo_ecris_reponse = ""
+                    st.rerun()
             elif not ligne.check_reponse(reponse):
                 st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>"f"❌ Oups. La réponse correcte est : {ligne.forme}."f"</div>",unsafe_allow_html=True)
             st.session_state.question_validee = True
