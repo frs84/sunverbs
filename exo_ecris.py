@@ -46,13 +46,13 @@ class ExoQuestion:
         
         suivant = st.button("⏭ Question suivante",key="question suivante")
                
-        if suivant:
-            if st.session_state.exo_ecris_index >= (len(self.lignes)-1):
-                pass
-            else:
-                st.session_state.exo_ecris_index += 1
-                st.session_state.question_validee = False
-                st.session_state.exo_ecris_reponse = ""
+      #  if suivant:
+      #      if st.session_state.exo_ecris_index >= (len(self.lignes)-1):
+      #          pass
+      #      else:
+      #          st.session_state.exo_ecris_index += 1
+      #          st.session_state.question_validee = False
+      #          st.session_state.exo_ecris_reponse = ""
         
         i = st.session_state.exo_ecris_index
         ligne = self.lignes[i]
@@ -68,18 +68,29 @@ class ExoQuestion:
             )
             valider = st.form_submit_button("✅ Vérifier")
             
-        if valider:
-            if reponse.strip() == "":
-                st.info(f"ℹ️ La réponse correcte est : {ligne.forme}")
-            elif ligne.check_reponse(reponse) and not st.session_state.question_validee:
-                st.success("✅ Bonne réponse !")
-                st.session_state.score += 1
-            elif ligne.check_reponse(reponse) and st.session_state.question_validee:
-                st.station_state["question suivante"] = True
-            elif not ligne.check_reponse(reponse):
-                st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>"f"❌ Oups. La réponse correcte est : {ligne.forme}."f"</div>",unsafe_allow_html=True)
-            st.session_state.question_validee = True
-            st.session_state.exo_ecris_reponse = reponse
+            if valider:
+                if st.session_state.question_validee:
+                    if st.session_state.exo_ecris_index < len(self.lignes) - 1:
+                        st.session_state.exo_ecris_index += 1
+                        st.session_state.question_validee = False
+                        st.session_state.exo_ecris_reponse = ""
+                        st.rerun()
+                    else:
+                        st.success(f"✅ Exercice terminé ! Score : {st.session_state.score} / {len(self.lignes)}")
+                        st.stop()
+                else:
+                    if reponse.strip() == "":
+                        st.info(f"ℹ️ La réponse correcte est : {ligne.forme}")
+                    elif ligne.check_reponse(reponse):
+                        st.success("✅ Bonne réponse !")
+                        st.session_state.score += 1
+                    else:
+                        st.markdown(f"<div style='background-color:#ffdddd; padding:10px; border-radius:5px; color:#900;'>"
+                                    f"❌ Oups. La réponse correcte est : {ligne.forme}."
+                                    f"</div>", unsafe_allow_html=True)
+                    st.session_state.question_validee = True
+                    st.session_state.exo_ecris_reponse = reponse
+
 
         
         if i >= (len(self.lignes)-1) and (st.session_state.question_validee):
