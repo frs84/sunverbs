@@ -9,9 +9,7 @@ class Exo_relie:
         self.df_exo = df[["personne", "formes"]]
         self.toutes_personnes = self.personnes_presentes()
 
-        if len(self.toutes_personnes)<6:
-            st.error("Plus on est de fous, plus on rit ! Ajoutez d'autres personnes, temps, verbe !")
-            st.stop()
+        
         self.lignes = self.list_lignes()
 
         # Initialisation de session_state
@@ -113,6 +111,9 @@ class Exo_relie:
         
 
     def afficher_exercice(self):
+        if len(self.toutes_personnes)<6:
+            st.error("Plus on est de fous, plus on rit ! Ajoutez d'autres personnes, temps, verbe !")
+            st.stop()
         recommencer = st.button("🔁 Recommencer l'exercice", key="exo_relie recommencer")
         if recommencer:
             del st.session_state["exo1_obj"]
