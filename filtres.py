@@ -189,9 +189,7 @@ class FiltreSunverbs:
                 verbe_mask |= (df['groupe'] == groupe) & (df['modèle'] == verbe)
             mask &= verbe_mask
 
-         # Personnes
-        if st.session_state.selected_personnes:
-            mask &= df["personne"].isin(st.session_state.selected_personnes)
+      
           
         # Modes / temps
         if st.session_state.selected_modes_temps:
@@ -199,5 +197,9 @@ class FiltreSunverbs:
                 lambda row: (row['mode'], row['temps']) in st.session_state.selected_modes_temps,
                 axis=1)
             # Si aucune sélection sur les verbes, modes/temps, ou personnes, renvoyer un df vide
+
+           # Personnes
+        if st.session_state.selected_personnes:
+            mask &= df["personne"].isin(st.session_state.selected_personnes)
            
         return df[mask]
