@@ -202,4 +202,4 @@ class FiltreSunverbs:
         if st.session_state.selected_personnes:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
            
-        return df[mask]
+        return df[mask].dropna()
