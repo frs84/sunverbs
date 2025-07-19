@@ -106,7 +106,7 @@ if filtered_df.empty:
     st.stop()
 
 #---Afficher les exercices---#
-col1,col2,,col3 = st.columns(3)
+col1,col2,col3 = st.columns(3)
 
 # Liste des exercices : (clé session_state, clé recommencer, classe, label bouton)
 liste_exos = [
