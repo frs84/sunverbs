@@ -106,13 +106,13 @@ if filtered_df.empty:
     st.stop()
 
 #---Afficher les exercices---#
-col1,col2,col3 = st.columns(3)
+
 
 # Liste des exercices : (clé session_state, clé recommencer, classe, label bouton)
 liste_exos = [
-    ("exo1", Exo_relie, "🔍 Exercice 1",col1),
-    ("exo2", Exo_devine_temps, "🎯 Exercice 2",col2),
-    ("exo3", ExoQuestion, "✏️ Exercice 3",col3),
+    ("exo1", Exo_relie, "🔍 Exercice 1"),
+    ("exo2", Exo_devine_temps, "🎯 Exercice 2"),
+    ("exo3", ExoQuestion, "✏️ Exercice 3"),
 ]
 
 for exo_key, ExoClasse, bouton_label,col in liste_exos:
@@ -130,7 +130,7 @@ for exo_key, ExoClasse, bouton_label,col in liste_exos:
 
     if show_key not in st.session_state:
         st.session_state[show_key] = False
-    if col.button(bouton_label):
+    if st.button(bouton_label):
         st.session_state[show_key] = not st.session_state[show_key]
     if st.session_state[show_key]:
         exo.afficher_exercice()
