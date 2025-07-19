@@ -115,7 +115,7 @@ liste_exos = [
     ("exo3", ExoQuestion, "✏️ Exercice 3"),
 ]
 
-for exo_key, ExoClasse, bouton_label,col in liste_exos:
+for exo_key, ExoClasse, bouton_label in liste_exos:
     obj_key = f"{exo_key}_obj"
     show_key = f"show_{exo_key}"
 
