@@ -71,18 +71,21 @@ class FiltreSunverbs:
             st.rerun()    
 
     def tout_decocher(self):
+        # Réinitialiser les sélections
         for g in self.groupes:
             st.session_state.selected_verbs[g] = set()
-            for v in self.verbes_par_groupe[g]:
-                st.session_state[f"{g}_{v}"] = False
         st.session_state.selected_modes_temps.clear()
-        for m in self.modes:
-            st.session_state[f"mode_{m}"] = False
-            for t in self.mode_to_temps[m]:
-                st.session_state[f"{m}_{t}"] = False
         st.session_state.selected_personnes.clear()
-        for p in self.personnes:
-            st.session_state[f"personne_{p}"] = False
+    
+        # Supprimer toutes les clés de widgets associées
+        keys_to_remove = [k for k in st.session_state.keys()
+                          if k.startswith("mode_") 
+                          or k.startswith("personne_") 
+                          or k.startswith("group_")
+                          or any(k.startswith(f"{g}_") for g in self.groupes)]
+        for k in keys_to_remove:
+            del st.session_state[k]
+
         st.rerun()
 
     # ------------------------------------------
@@ -221,6 +224,7 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
 
         return df[mask].dropna()
+
 
 
 
