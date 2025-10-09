@@ -82,7 +82,9 @@ class FiltreSunverbs:
                           if k.startswith("mode_") 
                           or k.startswith("personne_") 
                           or k.startswith("group_")
-                          or any(k.startswith(f"{g}_") for g in self.groupes)]
+                          or any(k.startswith(f"{g}_") for g in self.groupes)
+                          or k.startswith("type_")  # <- pour les types ER, IR, RE
+                          or k == "all_personnes"]
         for k in keys_to_remove:
             del st.session_state[k]
 
@@ -224,6 +226,7 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
 
         return df[mask].dropna()
+
 
 
 
