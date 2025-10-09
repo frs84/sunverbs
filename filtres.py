@@ -126,44 +126,22 @@ class FiltreSunverbs:
             groupe1 = ["je", "tu", "il", "elle"]
             groupe2 = ["nous", "vous", "ils", "elles"]
     
-            # Checkbox "Toutes les personnes"
-            key_all = "all_personnes"
-            if key_all not in st.session_state:
-                st.session_state[key_all] = len(st.session_state.selected_personnes) == len(self.personnes)
+            all_selected = len(st.session_state.selected_personnes) == len(self.personnes)
+            new_all = st.checkbox("Toutes les personnes", value=all_selected, key="all_personnes")
     
-            new_all = st.checkbox("Toutes les personnes", value=st.session_state[key_all], key=key_all)
-    
-            if new_all != st.session_state[key_all]:
-                st.session_state[key_all] = new_all
+            if new_all != all_selected:
                 if new_all:
                     st.session_state.selected_personnes = set(self.personnes)
                 else:
                     st.session_state.selected_personnes.clear()
                 st.rerun()
     
-            # Colonnes pour les personnes
             for col, groupe in zip([col1, col2], [groupe1, groupe2]):
                 with col:
                     for p in groupe:
                         if p in self.personnes:
-                            key_p = f"personne_{p}"
-                            if key_p not in st.session_state:
-                                st.session_state[key_p] = p in st.session_state.selected_personnes
-    
-                            new_val = st.checkbox(p, value=st.session_state[key_p], key=key_p)
-                            if new_val != st.session_state[key_p]:
-                                st.session_state[key_p] = new_val
-                                if new_val:
-                                    st.session_state.selected_personnes.add(p)
-                                else:
-                                    st.session_state.selected_personnes.discard(p)
-                                st.rerun()
-    
-    
-                with col2:
-                    for p in groupe2:
-                        if p in self.personnes:
                             checked = p in st.session_state.selected_personnes
+                            # aucune initialisation de st.session_state[key_p] nécessaire
                             new_val = st.checkbox(p, value=checked, key=f"personne_{p}")
                             if new_val != checked:
                                 if new_val:
@@ -172,41 +150,34 @@ class FiltreSunverbs:
                                     st.session_state.selected_personnes.discard(p)
                                 st.rerun()
 
+
     def expander_groupes_et_verbes(self):
         with st.expander("Groupes et verbes", expanded=False):
             cols = st.columns(len(self.groupes))
             for i, groupe in enumerate(self.groupes):
                 with cols[i]:
                     verbes = sorted(self.df[self.df["groupe"] == groupe]["modèle"].dropna().unique())
+                    
+                    all_selected = st.session_state.selected_verbs[groupe] == set(verbes)
+                    new_all_selected = st.checkbox(f"{groupe}", value=all_selected, key=f"group_{groupe}")
     
-                    # Checkbox "tout cocher" pour le groupe
-                    key_group = f"group_{groupe}"
-                    if key_group not in st.session_state:
-                        st.session_state[key_group] = st.session_state.selected_verbs[groupe] == set(verbes)
-    
-                    new_all_selected = st.checkbox(groupe, value=st.session_state[key_group], key=key_group)
-                    if new_all_selected != st.session_state[key_group]:
-                        st.session_state[key_group] = new_all_selected
+                    if new_all_selected != all_selected:
                         if new_all_selected:
                             st.session_state.selected_verbs[groupe] = set(verbes)
                         else:
                             st.session_state.selected_verbs[groupe] = set()
                         st.rerun()
     
-                    # Checkboxes individuelles pour chaque verbe
                     for verbe in verbes:
-                        key_verbe = f"{groupe}_{verbe}"
-                        if key_verbe not in st.session_state:
-                            st.session_state[key_verbe] = verbe in st.session_state.selected_verbs[groupe]
-    
-                        new_checked = st.checkbox(verbe, value=st.session_state[key_verbe], key=key_verbe)
-                        if new_checked != st.session_state[key_verbe]:
-                            st.session_state[key_verbe] = new_checked
+                        checked = verbe in st.session_state.selected_verbs[groupe]
+                        new_checked = st.checkbox(verbe, value=checked, key=f"{groupe}_{verbe}")
+                        if new_checked != checked:
                             if new_checked:
                                 st.session_state.selected_verbs[groupe].add(verbe)
                             else:
                                 st.session_state.selected_verbs[groupe].discard(verbe)
                             st.rerun()
+
     def get_filtre_df(self):
         if (
             not any(st.session_state.selected_verbs.values()) and
@@ -246,6 +217,7 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
            
         return df[mask].dropna()
+
 
 
 
