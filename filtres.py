@@ -55,19 +55,28 @@ class FiltreSunverbs:
     # ------------------------------------------
     # Tout cocher / Tout décocher
     # ------------------------------------------
-    def tout_cocher(self):
+    def tout_decocher(self):
+        # Verbes
         for g in self.groupes:
-            st.session_state.selected_verbs[g] = set(self.verbes_par_groupe[g])
+            st.session_state.selected_verbs[g] = set()
             for v in self.verbes_par_groupe[g]:
-                st.session_state[f"{g}_{v}"] = True
-        st.session_state.selected_modes_temps = set((m, t) for m in self.modes for t in self.mode_to_temps[m])
+                st.session_state[f"{g}_{v}"] = False
+    
+        # Modes et temps
+        st.session_state.selected_modes_temps.clear()
         for m in self.modes:
-            st.session_state[f"mode_{m}"] = True
+            st.session_state[f"mode_{m}"] = False
             for t in self.mode_to_temps[m]:
-                st.session_state[f"{m}_{t}"] = True
-        st.session_state.selected_personnes = set(self.personnes)
+                st.session_state[f"{m}_{t}"] = False
+    
+        # Personnes
+        st.session_state.selected_personnes.clear()
         for p in self.personnes:
-            st.session_state[f"personne_{p}"] = True
+            st.session_state[f"personne_{p}"] = False
+    
+        # Checkbox “Toutes les personnes”
+        st.session_state["all_personnes"] = False
+    
         st.rerun()
 
     def tout_decocher(self):
@@ -221,4 +230,5 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
 
         return df[mask].dropna()
+
 
