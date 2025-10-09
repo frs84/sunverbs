@@ -100,7 +100,7 @@ class FiltreSunverbs:
                             for t in temps_liste:
                                 st.session_state.selected_modes_temps.discard((mode, t))
                         
-                st.rerun()
+            
 
                     for t in temps_liste:
                         checked = (mode, t) in st.session_state.selected_modes_temps
@@ -110,7 +110,7 @@ class FiltreSunverbs:
                                 st.session_state.selected_modes_temps.add((mode, t))
                             else:
                                 st.session_state.selected_modes_temps.discard((mode, t))
-                            st.rerun()
+                st.rerun()
     
     
     def expander_personnes(self):
@@ -216,6 +216,7 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
            
         return df[mask].dropna()
+
 
 
 
