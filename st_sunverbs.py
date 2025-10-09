@@ -61,11 +61,11 @@ col1, col2 = st.columns(2)
 with col1:
     if st.button("✅ Tout cocher"):
         filtre.tout_cocher()
-        st.rerun()
+        
 with col2:
     if st.button("❌ Tout effacer"):
         filtre.tout_decocher()
-        st.rerun()
+        
 
 filtre.expander_temps_et_mode()
 filtre.expander_personnes()
@@ -134,3 +134,4 @@ for exo_key, ExoClasse, bouton_label in liste_exos:
         st.session_state[show_key] = not st.session_state[show_key]
     if st.session_state[show_key]:
         exo.afficher_exercice()
+
