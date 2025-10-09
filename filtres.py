@@ -87,6 +87,7 @@ class FiltreSunverbs:
                           or k == "all_personnes"]
 
         st.write(keys_to_remove)
+        st.stop()
         
         for k in keys_to_remove:
             del st.session_state[k]
@@ -229,6 +230,7 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
 
         return df[mask].dropna()
+
 
 
 
