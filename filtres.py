@@ -84,35 +84,33 @@ class FiltreSunverbs:
         
  
     def expander_temps_et_mode(self):
-        with st.expander("Temps et modes", expanded=False):
-            cols = st.columns(3)
-            for i, mode in enumerate(self.modes):
-                with cols[i]:
-                    temps_liste = self.mode_to_temps[mode]
-                    tous_coches = all((mode, t) in st.session_state.selected_modes_temps for t in temps_liste)
-                    nouvelle_val = st.checkbox(f"{mode}", value=tous_coches)
-
-                    if nouvelle_val != tous_coches:
-                        if nouvelle_val:
-                            for t in temps_liste:
-                                st.session_state.selected_modes_temps.add((mode, t))
-                        else:
-                            for t in temps_liste:
-                                st.session_state.selected_modes_temps.discard((mode, t))
-                        
-            
-
-                    for t in temps_liste:
-                        checked = (mode, t) in st.session_state.selected_modes_temps
-                        new_checked = st.checkbox(t, value=checked, key=f"{mode}_{t}")
-                        if new_checked != checked:
-                            if new_checked:
-                                st.session_state.selected_modes_temps.add((mode, t))
+            with st.expander("Temps et modes", expanded=False):
+                cols = st.columns(3)
+                for i, mode in enumerate(self.modes):
+                    with cols[i]:
+                        temps_liste = self.mode_to_temps[mode]
+                        tous_coches = all((mode, t) in st.session_state.selected_modes_temps for t in temps_liste)
+                        nouvelle_val = st.checkbox(f"{mode}", value=tous_coches, key=f"mode_{mode}")
+    
+                        if nouvelle_val != tous_coches:
+                            if nouvelle_val:
+                                for t in temps_liste:
+                                    st.session_state.selected_modes_temps.add((mode, t))
                             else:
-                                st.session_state.selected_modes_temps.discard((mode, t))
-                st.rerun()
+                                for t in temps_liste:
+                                    st.session_state.selected_modes_temps.discard((mode, t))
+                            st.rerun()
     
-    
+                        for t in temps_liste:
+                            checked = (mode, t) in st.session_state.selected_modes_temps
+                            new_checked = st.checkbox(t, value=checked, key=f"{mode}_{t}")
+                            if new_checked != checked:
+                                if new_checked:
+                                    st.session_state.selected_modes_temps.add((mode, t))
+                                else:
+                                    st.session_state.selected_modes_temps.discard((mode, t))
+                                st.rerun()
+        
     def expander_personnes(self):
         with st.expander("Personnes", expanded=False):
             col1, col2 = st.columns(2)
@@ -216,6 +214,7 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
            
         return df[mask].dropna()
+
 
 
 
