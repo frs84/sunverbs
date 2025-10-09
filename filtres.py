@@ -73,9 +73,6 @@ class FiltreSunverbs:
         st.session_state.selected_modes_temps.clear()
         st.session_state.selected_personnes.clear()
 
-        st.write(f'mode temps {st.session_state.selected_modes_temps}')
-        st.stop()
-        
         st.rerun()
 
         
@@ -214,6 +211,7 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
            
         return df[mask].dropna()
+
 
 
 
