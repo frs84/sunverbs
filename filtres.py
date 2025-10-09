@@ -78,27 +78,39 @@ class FiltreSunverbs:
             for i, mode in enumerate(self.modes):
                 with cols[i]:
                     temps_liste = self.mode_to_temps[mode]
+    
+                    # Checkbox du mode
                     tous_coches = all((mode, t) in st.session_state.selected_modes_temps for t in temps_liste)
                     nouvelle_val = st.checkbox(f"{mode}", value=tous_coches, key=f"mode_{mode}")
-
+    
+                    # Flag pour savoir si on doit rerun
+                    doit_rerun = False
+    
+                    # Si on modifie le mode (cocher/décocher tous)
                     if nouvelle_val != tous_coches:
+                        doit_rerun = True
                         if nouvelle_val:
                             for t in temps_liste:
                                 st.session_state.selected_modes_temps.add((mode, t))
                         else:
                             for t in temps_liste:
                                 st.session_state.selected_modes_temps.discard((mode, t))
-                        st.rerun()
-
+    
+                    # Checkboxes des temps
                     for t in temps_liste:
                         checked = (mode, t) in st.session_state.selected_modes_temps
                         new_checked = st.checkbox(t, value=checked, key=f"{mode}_{t}")
                         if new_checked != checked:
+                            doit_rerun = True
                             if new_checked:
                                 st.session_state.selected_modes_temps.add((mode, t))
                             else:
                                 st.session_state.selected_modes_temps.discard((mode, t))
-                            st.rerun()
+    
+                    # Rerun une seule fois si nécessaire
+                    if doit_rerun:
+                        st.experimental_rerun()
+
     
     def expander_personnes(self):
         with st.expander("Personnes", expanded=False):
@@ -203,3 +215,4 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
            
         return df[mask].dropna()
+
