@@ -72,13 +72,6 @@ class FiltreSunverbs:
             st.session_state.selected_verbs[g] = set()
         st.session_state.selected_modes_temps.clear()
         st.session_state.selected_personnes.clear()
-
-        keys_to_remove = [k for k in st.session_state.keys()
-                      if k.startswith("mode_") 
-                      or k.startswith("personne_") 
-                      or k.startswith("group_")]
-        for k in keys_to_remove:
-            del st.session_state[k]
         st.rerun()
 
         
@@ -214,6 +207,7 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
            
         return df[mask].dropna()
+
 
 
 
