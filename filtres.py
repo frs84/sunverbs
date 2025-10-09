@@ -109,7 +109,7 @@ class FiltreSunverbs:
     
                     # Rerun une seule fois si nécessaire
                     if doit_rerun:
-                        st.experimental_rerun()
+                        st.rerun()
 
     
     def expander_personnes(self):
@@ -215,4 +215,5 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
            
         return df[mask].dropna()
+
 
