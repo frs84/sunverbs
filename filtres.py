@@ -78,35 +78,46 @@ class FiltreSunverbs:
         
  
     def expander_temps_et_mode(self):
-            with st.expander("Temps et modes", expanded=False):
-                cols = st.columns(3)
-                for i, mode in enumerate(self.modes):
-                    with cols[i]:
-                        temps_liste = self.mode_to_temps[mode]
-                        tous_coches = all((mode, t) in st.session_state.selected_modes_temps for t in temps_liste)
-                        nouvelle_val = st.checkbox(
-                            f"{mode}", 
-                            value=all((mode, t) in st.session_state.selected_modes_temps for t in temps_liste), 
-                            key=f"mode_{mode}")
+        with st.expander("Temps et modes", expanded=False):
+            cols = st.columns(3)
+            for i, mode in enumerate(self.modes):
+                with cols[i]:
+                    temps_liste = self.mode_to_temps[mode]
     
-                        if nouvelle_val != tous_coches:
-                            if nouvelle_val:
-                                for t in temps_liste:
-                                    st.session_state.selected_modes_temps.add((mode, t))
+                    # Checkbox globale du mode
+                    key_mode = f"mode_{mode}"
+                    if key_mode not in st.session_state:
+                        # Initialisation selon tous les temps sélectionnés
+                        st.session_state[key_mode] = all((mode, t) in st.session_state.selected_modes_temps for t in temps_liste)
+    
+                    nouvelle_val = st.checkbox(f"{mode}", value=st.session_state[key_mode], key=key_mode)
+    
+                    # Mettre à jour l'ensemble des temps si l'utilisateur change le mode
+                    if nouvelle_val != st.session_state[key_mode]:
+                        st.session_state[key_mode] = nouvelle_val
+                        if nouvelle_val:
+                            for t in temps_liste:
+                                st.session_state.selected_modes_temps.add((mode, t))
+                        else:
+                            for t in temps_liste:
+                                st.session_state.selected_modes_temps.discard((mode, t))
+                        st.rerun()
+    
+                    # Checkbox pour chaque temps
+                    for t in temps_liste:
+                        key_t = f"{mode}_{t}"
+                        if key_t not in st.session_state:
+                            st.session_state[key_t] = (mode, t) in st.session_state.selected_modes_temps
+    
+                        new_checked = st.checkbox(t, value=st.session_state[key_t], key=key_t)
+                        if new_checked != st.session_state[key_t]:
+                            st.session_state[key_t] = new_checked
+                            if new_checked:
+                                st.session_state.selected_modes_temps.add((mode, t))
                             else:
-                                for t in temps_liste:
-                                    st.session_state.selected_modes_temps.discard((mode, t))
+                                st.session_state.selected_modes_temps.discard((mode, t))
                             st.rerun()
-    
-                        for t in temps_liste:
-                            checked = (mode, t) in st.session_state.selected_modes_temps
-                            new_checked = st.checkbox(t, value=checked, key=f"{mode}_{t}")
-                            if new_checked != checked:
-                                if new_checked:
-                                    st.session_state.selected_modes_temps.add((mode, t))
-                                else:
-                                    st.session_state.selected_modes_temps.discard((mode, t))
-                                st.rerun()
+
         
     def expander_personnes(self):
         with st.expander("Personnes", expanded=False):
@@ -211,6 +222,7 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
            
         return df[mask].dropna()
+
 
 
 
