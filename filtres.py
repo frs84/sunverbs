@@ -83,7 +83,10 @@ class FiltreSunverbs:
                     with cols[i]:
                         temps_liste = self.mode_to_temps[mode]
                         tous_coches = all((mode, t) in st.session_state.selected_modes_temps for t in temps_liste)
-                        nouvelle_val = st.checkbox(f"{mode}", value=tous_coches, key=f"mode_{mode}")
+                        nouvelle_val = st.checkbox(
+                            f"{mode}", 
+                            value=all((mode, t) in st.session_state.selected_modes_temps for t in temps_liste), 
+                            key=f"mode_{mode}")
     
                         if nouvelle_val != tous_coches:
                             if nouvelle_val:
@@ -207,6 +210,7 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
            
         return df[mask].dropna()
+
 
 
 
