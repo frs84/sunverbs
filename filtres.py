@@ -55,7 +55,7 @@ class FiltreSunverbs:
     # ------------------------------------------
     # Tout cocher / Tout décocher
     # ------------------------------------------
-        def tout_cocher(self):
+    def tout_cocher(self):
             for g in self.groupes:
                 st.session_state.selected_verbs[g] = set(self.verbes_par_groupe[g])
                 for v in self.verbes_par_groupe[g]:
@@ -68,7 +68,7 @@ class FiltreSunverbs:
             st.session_state.selected_personnes = set(self.personnes)
             for p in self.personnes:
                 st.session_state[f"personne_{p}"] = True
-            st.rerun()
+            st.rerun()    
 
     def tout_decocher(self):
         for g in self.groupes:
@@ -221,6 +221,7 @@ class FiltreSunverbs:
             mask &= df["personne"].isin(st.session_state.selected_personnes)
 
         return df[mask].dropna()
+
 
 
 
