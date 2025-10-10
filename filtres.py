@@ -73,40 +73,39 @@ class FiltreSunverbs:
                         #checking if all verbs in this mode are ticked
                         keys = [k for k in list(st.session_state.keys()) if k.startswith(f'case_{mode}') 
                                 and k != f'case_{mode}']
-                        all_verbs_checked = all(st.session_state[k] for k in keys)
-                        all_verbs_in_selected = all((mode, t) in st.session_state.selected_modes_temps 
+                        all_temps_checked = all(st.session_state[k] for k in keys)
+                        all_temps_in_selected = all((mode, t) in st.session_state.selected_modes_temps 
                                                     for t in temps_liste)
 
                         #if the mode box is ticked
                         if st.session_state[f'case_{mode}']:
-                            if all_verbs_checked: 
-                                if all_verbs_in_selected:
+                            if all_temps_checked: 
+                                if all_temps_in_selected:
                                     pass #alright, no change here
                                 else:
                                     st.write('T T F I though it was impossible !')
                                     st.stop()
                             else:
-                                if all_verbs_in_selected:
+                                if all_temps_in_selected:
                                     #j'ai déselectionné UN verbe, la case mode devient False
                                     st.session_state[f'case_{mode}'] = False
                                 else:
                                     #j'ai appuye sur le bouton du mode, il faut selectionner tous les verbes !!
                                     for t in temps_liste:
-                                        
                                         st.session_state[f'case_{mode}_{t}']=True
                                                                             
                         
                         #if the mode box is not ticked
                         else:
-                            if all_verbs_checked:
-                                if all_verbs_in_selected:
+                            if all_temps_checked:
+                                if all_temps_in_selected:
                                     for t in temps_liste:
                                         st.session_state[f'case_{mode}_{t}'] = False
                                 else:
                                     st.session_state[f'case_{mode}'] = True
 
                             else:
-                                if all_verbs_in_selected:
+                                if all_temps_in_selected:
                                     st.write('F F T I though it was impossible !')
                                     st.stop()
                                 else:
@@ -124,70 +123,125 @@ class FiltreSunverbs:
 
  
     def expander_personnes(self):
+        if 'case_toutes les personnes' not in st.session_state:
+            st.session_state['case_toutes les personnes'] = False
         
-        with st.expander("Personnes", expanded=False):
-            col1, col2 = st.columns(2)
+        else: 
+            all_personnes_keys = [k for k in list(st.session_state.keys()) if k.startswith('case_pers')]
+            all_personnes_checked = all([st.session_state.get(k,False) for k in all_personnes_keys])
+            all_personnes_selected = all(personne in st.session_state.selected_personnes for personne in self.personnes)
 
-            groupe1 = ["je", "tu", "il", "elle"]
-            groupe2 = ["nous", "vous", "ils", "elles"]
-
-            all_selected = len(st.session_state.selected_personnes) == len(self.personnes)
-            new_all = st.checkbox("Toutes les personnes", value=all_selected, key="case_all_personnes")
-
-            if new_all != all_selected:
-                if new_all:
-                    st.session_state.selected_personnes = set(self.personnes)
+            if st.session_state["case_toutes les personnes"]:
+                if all_personnes_checked:
+                    if all_personnes_selected:
+                        pass # no problem her
+                    else: 
+                        st.write('TTF impossible !')
+                        st.stop()
                 else:
-                    st.session_state.selected_personnes.clear()
-                st.rerun()
+                    if all_personnes_selected:
+                        #je viens de deselectionner une personne
+                        st.session_state["case_toutes les personnes"] = False
+                    else:
+                        #je viens de selectionner toutes les personnes
+                        for k in all_personnes_keys:
+                            st.session_state[k]=True
 
+            else:
+                if all_personnes_checked:
+                    if all_personnes_selected:
+                        for k in all_personnes_keys:
+                            st.session_state[k]=False
+                    else:
+                        st.session_state['case_toutes les personnes'] = True
+
+                else:
+                    if all_personnes_selected:
+                        st.write('FFT impossible !')
+                        st.stop()
+                    else:
+                        pass #no change here
+        
+        with st.expander("Personnes", expanded=False):    
+            st.checkbox('Toutes les personnes',key='case_toutes les personnes')
+            col1, col2 = st.columns(2)
+            groupe1 = ["je", "j'","tu", "il", "elle"]
+            groupe2 = ["nous", "vous", "ils", "elles"]
+            
             with col1:
                 for p in groupe1:
-                    if p in self.personnes:
-                        checked = p in st.session_state.selected_personnes
-                        new_val = st.checkbox(p, value=checked, key=f"case_personne_{p}")
-                        if new_val != checked:
-                            if new_val:
-                                st.session_state.selected_personnes.add(p)
-                            else:
-                                st.session_state.selected_personnes.discard(p)
-                            st.rerun()
-
+                    st.checkbox(p, key=f"case_personne_{p}")
+                    if st.session_state[f"case_personne_{p}"]:
+                        st.session_state['selected_personnes'].add(p)
+                    else:
+                        st.session_state['selected_personnes'].discard(p)
             with col2:
                 for p in groupe2:
-                    if p in self.personnes:
-                        checked = p in st.session_state.selected_personnes
-                        new_val = st.checkbox(p, value=checked, key=f"case_personne_{p}")
-                        if new_val != checked:
-                            if new_val:
-                                st.session_state.selected_personnes.add(p)
-                            else:
-                                st.session_state.selected_personnes.discard(p)
-                            st.rerun()
+                    st.checkbox(p, key=f"case_personne_{p}")
+                    if st.session_state[f"case_personne_{p}"]:
+                        st.session_state['selected_personnes'].add(p)
+                    else:
+                        st.session_state['selected_personnes'].discard(p)
+            
+            
 
     def expander_groupes_et_verbes(self):
         with st.expander("Groupes et verbes", expanded=False):
             cols = st.columns(len(self.groupes))
             for i, groupe in enumerate(self.groupes):
                 with cols[i]:
-                    verbes = self.df[self.df["groupe"] == groupe]["modèle"].dropna().unique()
-                    verbes = sorted(verbes)
-                    all_selected = st.session_state.selected_verbs[groupe] == set(verbes)
-                    new_all_selected = st.checkbox(f"{groupe}", value=all_selected, key=f"case_group_{groupe}")
+                    verbes = sorted(self.df[self.df["groupe"] == groupe]["modèle"].dropna().unique())
 
-                    if new_all_selected != all_selected:
-                        st.session_state.selected_verbs[groupe] = set(verbes) if new_all_selected else set()
-                        st.rerun()
+                    # Initialisation du state
+                    if f"case_group_{groupe}" not in st.session_state:
+                        st.session_state[f"case_group_{groupe}"] = False
+                    if groupe not in st.session_state.selected_verbs:
+                        st.session_state.selected_verbs[groupe] = set()
 
-                    for verbe in verbes:
-                        is_checked = verbe in st.session_state.selected_verbs[groupe]
-                        new_checked = st.checkbox(verbe, value=is_checked, key=f"case_{groupe}_{verbe}")
-                        if new_checked != is_checked:
-                            if new_checked:
-                                st.session_state.selected_verbs[groupe].add(verbe)
+                    # États actuels
+                    all_verbes_checked = all(
+                        st.session_state.get(f"case_{groupe}_{v}", False) for v in verbes
+                    )
+                    all_verbes_selected = st.session_state.selected_verbs[groupe] == set(verbes)
+
+                    # Logique de synchro groupe ↔ verbes
+                    if st.session_state[f"case_group_{groupe}"]:
+                        if all_verbes_checked:
+                            if all_verbes_selected:
+                                pass
                             else:
-                                st.session_state.selected_verbs[groupe].discard(verbe)
-                            st.rerun()
+                                st.write('TTF Impossible!')
+                                st.stop()
+                        else:
+                            if all_verbes_selected:
+                                st.session_state[f"case_group_{groupe}"] = False
+                            else:
+                                for v in verbes:
+                                    st.session_state[f'case_{groupe}_{v}'] = True
+                    else:
+                        if all_verbes_checked:
+                            if all_verbes_selected:
+                                for v in verbes:
+                                    st.session_state[f'case_{groupe}_{v}']=False
+                            else:
+                                st.session_state[f'case_group_{groupe}']=True
+                        else:
+                            if all_verbes_selected:
+                                st.write('FFT Impossible!')
+                            else:
+                                pass #no problem
+
+                    # Checkbox groupe
+                    st.checkbox(f"{groupe}", key=f"case_group_{groupe}")
+
+                    # Checkbox verbes
+                    for v in verbes:
+                        st.checkbox(v, key=f"case_{groupe}_{v}")
+                        if st.session_state[f"case_{groupe}_{v}"]:
+                            st.session_state.selected_verbs[groupe].add(v)
+                        else:
+                            st.session_state.selected_verbs[groupe].discard(v)
+
     def get_filtre_df(self):
         if (
             not any(st.session_state.selected_verbs.values()) and
