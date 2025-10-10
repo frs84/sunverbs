@@ -61,43 +61,68 @@ class FiltreSunverbs:
         st.rerun()
 
     def expander_temps_et_mode(self):
-        
         with st.expander("Temps et modes", expanded=False):
             cols = st.columns(3)
             for i, mode in enumerate(self.modes):
                 with cols[i]:
                     temps_liste = self.mode_et_temps[mode]
-                    key_mode = f"case_{mode}"
-                    # créer la clé si elle n'existe pas encore
-                    if key_mode not in st.session_state:
-                        st.session_state[key_mode] = False
+                    if f'case_{mode}' not in st.session_state:
+                        st.session_state[f'case_{mode}'] = False
 
-                    # calculer si tous les temps sont cochés (vrai ou faux)
-                    tous_coches = all((mode, t) in st.session_state.selected_modes_temps for t in temps_liste)
+                    else:
+                        #checking if all verbs in this mode are ticked
+                        keys = [k for k in list(st.session_state.keys()) if k.startswith(f'case_{mode}') 
+                                and k != f'case_{mode}']
+                        all_verbs_checked = all(st.session_state[k] for k in keys)
+                        all_verbs_in_selected = all((mode, t) in st.session_state.selected_modes_temps 
+                                                    for t in temps_liste)
 
-                    # checkbox affichée selon session_state ou tous_coches
-                    st.session_state[key_mode] = st.checkbox(f"{mode}", value=st.session_state[key_mode] or tous_coches)
-
-                    # mettre à jour selected_modes_temps si l'utilisateur a changé l'état
-                    if st.session_state[key_mode] != tous_coches:
-                        if st.session_state[key_mode]:
-                            for t in temps_liste:
-                                st.session_state.selected_modes_temps.add((mode, t))
-                        else:
-                            for t in temps_liste:
-                                st.session_state.selected_modes_temps.discard((mode, t))
-                        st.rerun()
-
-                    for t in temps_liste:
-                        checked = (mode, t) in st.session_state.selected_modes_temps
-                        new_checked = st.checkbox(t, value=checked, key=f"case_{mode}_{t}")
-                        if new_checked != checked:
-                            if new_checked:
-                                st.session_state.selected_modes_temps.add((mode, t))
+                        #if the mode box is ticked
+                        if st.session_state[f'case_{mode}']:
+                            if all_verbs_checked: 
+                                if all_verbs_in_selected:
+                                    pass #alright, no change here
+                                else:
+                                    st.write('T T F I though it was impossible !')
+                                    st.stop()
                             else:
-                                st.session_state.selected_modes_temps.discard((mode, t))
-                            st.rerun()
-    
+                                if all_verbs_in_selected:
+                                    #j'ai déselectionné UN verbe, la case mode devient False
+                                    st.session_state[f'case_{mode}'] = False
+                                else:
+                                    #j'ai appuye sur le bouton du mode, il faut selectionner tous les verbes !!
+                                    for t in temps_liste:
+                                        
+                                        st.session_state[f'case_{mode}_{t}']=True
+                                                                            
+                        
+                        #if the mode box is not ticked
+                        else:
+                            if all_verbs_checked:
+                                if all_verbs_in_selected:
+                                    for t in temps_liste:
+                                        st.session_state[f'case_{mode}_{t}'] = False
+                                else:
+                                    st.session_state[f'case_{mode}'] = True
+
+                            else:
+                                if all_verbs_in_selected:
+                                    st.write('F F T I though it was impossible !')
+                                    st.stop()
+                                else:
+                                    pass #alright, no change here"""
+                    
+                    st.checkbox(f'{mode}',key=f'case_{mode}')
+
+                    #times
+                    for t in self.mode_et_temps[mode]:
+                        st.checkbox(f'{t}',key =f'case_{mode}_{t}')
+                        if st.session_state[f'case_{mode}_{t}']:
+                            st.session_state.selected_modes_temps.add((mode,t))
+                        else: 
+                            st.session_state.selected_modes_temps.discard((mode,t))
+
+ 
     def expander_personnes(self):
         
         with st.expander("Personnes", expanded=False):
@@ -202,5 +227,3 @@ class FiltreSunverbs:
 
            
         return df[mask].dropna()
-
-
