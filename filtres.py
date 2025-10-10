@@ -57,7 +57,7 @@ class FiltreSunverbs:
         
         for k in list(st.session_state.keys()):
             if k.startswith('case'):
-                del st.session_state[k] 
+                st.session_state[k] = False 
         st.rerun()
 
     def expander_temps_et_mode(self):
@@ -202,4 +202,5 @@ class FiltreSunverbs:
 
            
         return df[mask].dropna()
+
 
