@@ -90,7 +90,7 @@ class FiltreSunverbs:
 
                     for t in temps_liste:
                         checked = (mode, t) in st.session_state.selected_modes_temps
-                        new_checked = st.checkbox(t, value=checked, key=f"{mode}_{t}")
+                        new_checked = st.checkbox(t, value=checked, key=f"case_{mode}_{t}")
                         if new_checked != checked:
                             if new_checked:
                                 st.session_state.selected_modes_temps.add((mode, t))
@@ -148,7 +148,7 @@ class FiltreSunverbs:
                     verbes = self.df[self.df["groupe"] == groupe]["modèle"].dropna().unique()
                     verbes = sorted(verbes)
                     all_selected = st.session_state.selected_verbs[groupe] == set(verbes)
-                    new_all_selected = st.checkbox(f"{groupe}", value=all_selected, key=f"group_{groupe}")
+                    new_all_selected = st.checkbox(f"{groupe}", value=all_selected, key=f"case_group_{groupe}")
 
                     if new_all_selected != all_selected:
                         st.session_state.selected_verbs[groupe] = set(verbes) if new_all_selected else set()
@@ -156,7 +156,7 @@ class FiltreSunverbs:
 
                     for verbe in verbes:
                         is_checked = verbe in st.session_state.selected_verbs[groupe]
-                        new_checked = st.checkbox(verbe, value=is_checked, key=f"{groupe}_{verbe}")
+                        new_checked = st.checkbox(verbe, value=is_checked, key=f"case_{groupe}_{verbe}")
                         if new_checked != is_checked:
                             if new_checked:
                                 st.session_state.selected_verbs[groupe].add(verbe)
@@ -202,3 +202,4 @@ class FiltreSunverbs:
 
            
         return df[mask].dropna()
+
